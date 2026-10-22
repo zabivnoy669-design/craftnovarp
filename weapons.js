@@ -20,6 +20,6 @@
   $('count').textContent=`Показано ${rows.length} из ${all.length} видов оружия`;
   if(!rows.length)$('status').textContent='По этому запросу оружие не найдено.';
  }
- async function load(){try{const r=await fetch('weapons-seed.json?v=20261022-damage1',{cache:'no-store'});if(!r.ok)throw Error('Не удалось загрузить список оружия.');all=await r.json();$('status').textContent='Урон указан отдельно для попаданий в голову и тело в стандартном виде.';render();}catch(e){$('status').textContent=e.message;$('status').classList.add('error');}}
+ async function load(){try{const r=await fetch('weapons-seed.json?v=20261022-damage1',{cache:'no-store'});if(!r.ok)throw Error('Не удалось загрузить список оружия.');all=await r.json();$('status').textContent='Урон указан отдельно для попаданий в голову и тело по присланным данным.';render();}catch(e){$('status').textContent=e.message;$('status').classList.add('error');}}
  $('search').addEventListener('input',render);$('category').addEventListener('change',render);$('refresh').onclick=load;load();
 })();
