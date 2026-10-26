@@ -1,0 +1,199 @@
+/* Nova RP Pedia — Global Profile Header Button & Achievement Toast */
+.nova-header-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+header .nova-header-end > .right {
+  margin-left: 0;
+}
+
+.nova-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 12px 7px 9px;
+  border-radius: 10px;
+  border: 1px solid rgba(236, 200, 139, 0.28);
+  background: linear-gradient(135deg, rgba(32, 42, 56, 0.85), rgba(17, 25, 37, 0.92));
+  color: #f3e8d2;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nova-profile-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(236, 200, 139, 0.65);
+  background: linear-gradient(135deg, rgba(44, 56, 74, 0.92), rgba(24, 34, 49, 0.96));
+  color: #fff6e5;
+  box-shadow: 0 10px 26px rgba(219, 177, 107, 0.14);
+}
+
+.nova-profile-btn:focus-visible {
+  outline: 2px solid #ecc88b;
+  outline-offset: 3px;
+}
+
+.nova-profile-btn.is-current {
+  border-color: rgba(236, 200, 139, 0.78);
+  background: linear-gradient(125deg, rgba(230, 198, 142, 0.22), rgba(32, 43, 59, 0.95));
+  color: #ffe7bd;
+  box-shadow: 0 0 24px rgba(236, 200, 139, 0.16);
+}
+
+.npb-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  display: inline-grid;
+  place-items: center;
+  background: rgba(236, 200, 139, 0.14);
+  border: 1px solid rgba(236, 200, 139, 0.32);
+  color: #ecc88b;
+  font-size: 13px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.npb-label {
+  max-width: 135px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.npb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: rgba(236, 200, 139, 0.16);
+  color: #f0d29a;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+/* Achievement Unlock Toast Stack */
+.nova-ach-toast-stack {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: min(370px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.nova-ach-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(236, 200, 139, 0.55);
+  background: linear-gradient(135deg, rgba(25, 34, 48, 0.96), rgba(12, 18, 28, 0.98));
+  color: #eef2f8;
+  text-decoration: none;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55), 0 0 28px rgba(236, 200, 139, 0.16);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: novaAchSlideIn 0.38s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+
+.nova-ach-toast:hover {
+  border-color: #f3d59b;
+  color: #fff;
+}
+
+.nova-ach-toast-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 30% 25%, rgba(236, 200, 139, 0.32), rgba(236, 200, 139, 0.08));
+  border: 1px solid rgba(236, 200, 139, 0.45);
+  color: #f3d49b;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.nova-ach-toast-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.nova-ach-toast-kicker {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #ecc88b;
+  font-weight: 700;
+}
+
+.nova-ach-toast-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+.nova-ach-toast-sub {
+  font-size: 11px;
+  color: #9fb0c7;
+  margin-top: 3px;
+}
+
+@keyframes novaAchSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 680px) {
+  header {
+    gap: 14px !important;
+  }
+  header .nova-header-end > .right {
+    display: none;
+  }
+  .nova-profile-btn {
+    padding: 6px 10px 6px 8px;
+    gap: 7px;
+    font-size: 12px;
+  }
+  .npb-label {
+    max-width: 92px;
+  }
+}
+
+@media (max-width: 420px) {
+  .npb-label {
+    max-width: 72px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova-profile-btn,
+  .nova-ach-toast {
+    animation: none !important;
+    transition: none !important;
+  }
+}
