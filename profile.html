@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="no-referrer" />
+<meta name="description" content="Личный профиль жителя Nova RP Pedia — вход в аккаунт, общий список всех аккаунтов, команда /try и необычные достижения штата." />
+<meta name="theme-color" content="#090d13" />
+<title>Профиль и реестр аккаунтов — Nova RP Pedia</title>
+<link rel="stylesheet" href="profile-nav.css" />
+<style>
+  :root {
+    --nova-gold: #ecc88b;
+    --bg: #090d13;
+    --card: rgba(20, 32, 48, 0.74);
+    --card-2: rgba(16, 26, 40, 0.86);
+    --line: rgba(181, 201, 229, 0.13);
+    --line-strong: rgba(226, 197, 139, 0.28);
+    --text: #e9edf4;
+    --muted: #9aa9bd;
+    --subtle: #71849d;
+    --accent: #ecc88b;
+    --accent-2: #cba366;
+    --accent-soft: rgba(236, 200, 139, 0.14);
+    --accent-glow: rgba(236, 200, 139, 0.24);
+    --emerald: #88c6a9;
+    --sky: #7ec8e3;
+    --amber: #f3d49b;
+    --violet: #b6a6e8;
+    --coral: #f0a59a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html { background: #090d13; scroll-behavior: smooth; color-scheme: dark; }
+  body {
+    background: #090d13;
+    color: var(--text);
+    font: 14px 'Segoe UI', Arial, sans-serif;
+    line-height: 1.55;
+    min-height: 100vh;
+    isolation: isolate;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  button, input, select { font: inherit; }
+  button { cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+
+  /* NOVA — animated atmosphere */
+  .atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 0%, #18212d 0%, #0c111a 44%, #090d13 85%);
+  }
+  .aura {
+    position: absolute;
+    width: 70vw;
+    height: 70vw;
+    max-width: 1100px;
+    max-height: 1100px;
+    border-radius: 50%;
+    filter: blur(75px);
+    opacity: .38;
+    will-change: transform;
+    animation: auraFloat 27s ease-in-out infinite alternate;
+  }
+  .aura.gold { left: -32vw; top: -38vw; background: radial-gradient(circle, #9a713e 0%, #6e54272e 48%, transparent 68%); }
+  .aura.teal { right: -32vw; top: 8vh; background: radial-gradient(circle, #205d65 0%, #1b586b33 46%, transparent 68%); animation-duration: 34s; animation-delay: -13s; }
+  .aura.violet { left: 24vw; bottom: -60vw; background: radial-gradient(circle, #424a79 0%, transparent 65%); animation-duration: 39s; animation-delay: -20s; }
+  .bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(#c2d3ed05 1px, transparent 1px), linear-gradient(90deg, #c2d3ed05 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(transparent, #0008 40%, transparent);
+    transform: perspective(900px) rotateX(20deg) scale(1.15);
+  }
+  .bg-beam {
+    position: absolute;
+    left: 22%;
+    top: -25%;
+    width: 20%;
+    height: 150%;
+    background: linear-gradient(90deg, transparent, #e4bb7010, transparent);
+    transform: rotate(30deg);
+    filter: blur(25px);
+    animation: beamDrift 30s ease-in-out infinite alternate;
+  }
+  .sparks {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #e9cc92;
+    box-shadow: 7vw 14vh 1px #e9cc9280, 18vw 68vh 1px #e9cc9260, 28vw 32vh 2px #e9cc9290, 36vw 84vh 1px #b3e0dd80, 46vw 18vh 1px #e9cc9290, 58vw 58vh 2px #e9cc9260, 69vw 28vh 1px #e9cc9270, 78vw 76vh 1px #b3e0dd80, 86vw 43vh 2px #e9cc9270, 95vw 89vh 1px #e9cc9250;
+    opacity: .4;
+    animation: sparkDrift 19s ease-in-out infinite alternate;
+  }
+  .sparks.second { transform: translate(10vw, 9vh); animation-delay: -9s; animation-duration: 26s; opacity: .25; }
+
+  @keyframes auraFloat { 0% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(7vw,6vh,0) scale(1.12); } 100% { transform: translate3d(14vw,-3vh,0) scale(.94); } }
+  @keyframes sparkDrift { from { translate: 0 0; opacity: .2; } to { translate: 18px -60px; opacity: .6; } }
+  @keyframes beamDrift { from { translate: -12vw 0; opacity: .3; } to { translate: 25vw 0; opacity: .8; } }
+  @keyframes pageReveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  header {
+    position: relative;
+    z-index: 20;
+    height: 88px;
+    border-bottom: 1px solid #afc3e518;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 0 4vw;
+    background: rgba(13, 18, 26, .62);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .brand {
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: -1.2px;
+    color: #eee;
+    flex-shrink: 0;
+  }
+  .brand:hover { color: #fff; }
+  .brand b { color: #ecc88b; text-shadow: 0 0 26px #edc58030; }
+  .brand small {
+    font-size: 9px;
+    letter-spacing: 3.3px;
+    display: block;
+    color: #8692a5;
+    margin-top: 5px;
+  }
+  header .right {
+    font-size: 12px;
+    border: 1px solid #e0c99c1c;
+    background: #ffffff05;
+    color: #b9c5d7;
+    border-radius: 7px;
+    padding: 8px 12px;
+  }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .site-nav a {
+    color: #a4b2c6;
+    font-size: 13px;
+    padding: 8px 13px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: color .18s, background .18s, border-color .18s;
+  }
+  .site-nav a:hover {
+    color: #efd099;
+    background: #e4bf8112;
+    border-color: #e4bf8128;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1460px;
+    margin: 0 auto;
+    padding: 34px 4vw 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    animation: pageReveal .6s ease both;
+  }
+
+  .crumb {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #8b98ab;
+    letter-spacing: .3px;
+  }
+  .crumb a:hover { color: #ecc88b; text-decoration: underline; }
+  .crumb span { color: #e1c28c; }
+  .quick-jumps {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .quick-jumps a {
+    color: #b8c7dc;
+    font-weight: 600;
+  }
+
+  /* BUTTONS & INPUTS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 9px;
+    border: 1px solid rgba(221, 193, 146, .28);
+    background: rgba(208, 175, 119, .09);
+    color: #ebd09e;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .16s ease, background .16s ease, border-color .16s ease, filter .16s ease;
+    white-space: nowrap;
+  }
+  .btn:hover {
+    background: rgba(216, 185, 129, .2);
+    border-color: rgba(236, 200, 139, .58);
+    color: #fff3da;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary {
+    background: linear-gradient(115deg, #edcf98, #c49c62);
+    border-color: rgba(248, 219, 162, .65);
+    color: #201910;
+    font-weight: 700;
+    box-shadow: 0 8px 26px rgba(203, 163, 102, .2);
+  }
+  .btn.primary:hover {
+    filter: brightness(1.06);
+    color: #19130b;
+  }
+  .btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .field.span-full { grid-column: 1 / -1; }
+  .field label {
+    font-size: 12px;
+    color: #a8b9ce;
+  }
+  .input, .select {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 9px;
+    border: 1px solid rgba(178, 200, 229, .2);
+    background: rgba(16, 25, 38, .9);
+    color: var(--text);
+    font-size: 13.5px;
+    outline: none;
+    transition: border-color .18s ease, box-shadow .18s ease;
+  }
+  .input:focus, .select:focus {
+    border-color: #dcb87c;
+    box-shadow: 0 0 0 3px rgba(220, 184, 124, .12);
+  }
+
+  /* GUEST AUTH GATE HERO */
+  .auth-gate-card {
+    background:
+      radial-gradient(600px 260px at 0% 0%, rgba(236, 200, 139, .14), transparent 70%),
+      linear-gradient(135deg, rgba(32, 42, 58, 0.86), rgba(14, 21, 33, 0.94));
+    border: 1px solid rgba(236, 200, 139, 0.38);
+    border-radius: 20px;
+    padding: 28px 30px;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, .4);
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+  .auth-gate-info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .auth-gate-title {
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    background: linear-gradient(115deg, #fbf6eb 10%, #ecc88b 68%, #b8d0d8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .auth-perks {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 4px;
+  }
+  .auth-perk {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    color: #b7c6da;
+  }
+  .auth-perk b { color: #f3d59b; }
+  .auth-form-box {
+    background: rgba(10, 16, 25, .82);
+    border: 1px solid rgba(181, 201, 229, .2);
+    border-radius: 16px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* HERO DOSSIER CARD (SIGNED IN) */
+  .dossier-card {
+    background: linear-gradient(135deg, rgba(32, 42, 56, 0.78), rgba(16, 24, 37, 0.88));
+    border: 1px solid rgba(226, 197, 139, 0.26);
+    border-radius: 20px;
+    padding: 28px 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .dossier-top {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .dossier-avatar {
+    width: 86px;
+    height: 86px;
+    border-radius: 20px;
+    background: radial-gradient(circle at 30% 25%, rgba(236, 200, 139, .26), rgba(236, 200, 139, .06));
+    border: 1px solid rgba(236, 200, 139, .45);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, .35), inset 0 0 24px rgba(236, 200, 139, .08);
+    display: grid;
+    place-items: center;
+    font-size: 36px;
+    color: #f3d59b;
+    position: relative;
+    user-select: none;
+  }
+  .dossier-level-pill {
+    position: absolute;
+    bottom: -9px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: #131c29;
+    border: 1px solid rgba(236, 200, 139, .55);
+    color: #f3d59b;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .6px;
+  }
+
+  .dossier-identity {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .dossier-chips {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 7px;
+    font-size: 11.5px;
+    font-weight: 600;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, .04);
+    color: var(--muted);
+  }
+  .chip.static-id {
+    color: #d8e2f0;
+    background: rgba(15, 23, 36, .75);
+    border-color: rgba(181, 201, 229, .24);
+    font-family: Consolas, 'Courier New', monospace;
+  }
+  .chip.title-badge {
+    color: #f5dba4;
+    background: rgba(236, 200, 139, .14);
+    border-color: rgba(236, 200, 139, .38);
+  }
+  .chip.faction-badge {
+    color: #bfe0f5;
+    background: rgba(126, 200, 227, .11);
+    border-color: rgba(126, 200, 227, .28);
+  }
+  .chip.sync-badge.online {
+    color: #9fe0c2;
+    background: rgba(136, 198, 169, .13);
+    border-color: rgba(136, 198, 169, .35);
+  }
+
+  .dossier-name {
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    background: linear-gradient(115deg, #fbf6eb 10%, #ecc88b 68%, #b8d0d8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    word-break: break-word;
+  }
+  .dossier-motto {
+    color: var(--muted);
+    font-size: 13.5px;
+    max-width: 72ch;
+    line-height: 1.65;
+  }
+
+  .dossier-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  /* XP BAR */
+  .xp-strip {
+    background: rgba(9, 14, 22, .62);
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    padding: 15px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .xp-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .xp-rank-title {
+    font-weight: 700;
+    font-size: 14.5px;
+    color: var(--text);
+  }
+  .xp-rank-title span {
+    color: var(--accent);
+    margin-right: 7px;
+  }
+  .xp-numbers {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .xp-numbers strong { color: #f3d59b; }
+  .xp-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(175, 196, 224, .12);
+    overflow: hidden;
+  }
+  .xp-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #a88450, #ecc88b, #f7e4bc);
+    box-shadow: 0 0 14px rgba(236, 200, 139, .55);
+    transition: width .4s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  /* DOSSIER EDITOR DRAWER */
+  .dossier-editor {
+    background: rgba(10, 16, 25, .82);
+    border: 1px solid rgba(226, 197, 139, .24);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .editor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .avatar-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .avatar-opt {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(181, 201, 229, .2);
+    background: rgba(255, 255, 255, .03);
+    color: var(--text);
+    font-size: 18px;
+    display: grid;
+    place-items: center;
+    transition: border-color .15s ease, background .15s ease, transform .12s ease;
+  }
+  .avatar-opt:hover {
+    background: rgba(236, 200, 139, .1);
+    transform: translateY(-1px);
+  }
+  .avatar-opt.active {
+    border-color: var(--accent);
+    background: rgba(236, 200, 139, .2);
+    color: #ffe6b8;
+    box-shadow: 0 0 0 2px rgba(236, 200, 139, .16);
+  }
+  .editor-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .status-note {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .status-note.ok { color: var(--emerald); }
+  .status-note.err { color: var(--coral); }
+
+  /* PANELS */
+  .mid-grid {
+    display: grid;
+    grid-template-columns: 1.12fr 1fr;
+    gap: 22px;
+  }
+  .panel {
+    background: linear-gradient(140deg, rgba(28, 40, 56, 0.72), rgba(16, 24, 38, 0.84));
+    border: 1px solid rgba(181, 201, 229, 0.15);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, .22);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .panel-kicker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 2.4px;
+    color: #e5c58f;
+    margin-bottom: 6px;
+  }
+  .panel-kicker::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #e4c18a;
+    box-shadow: 0 0 12px #ebc88380;
+  }
+  .panel h2 {
+    font-size: 22px;
+    font-weight: 750;
+    letter-spacing: -.6px;
+    color: #f3efe6;
+  }
+  .panel-sub {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .lock-callout {
+    padding: 13px 16px;
+    border-radius: 11px;
+    border: 1px solid rgba(236, 200, 139, .35);
+    background: rgba(236, 200, 139, .09);
+    color: #efd49f;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* PUBLIC ACCOUNTS DIRECTORY */
+  .dir-toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .dir-toolbar .input { flex: 1; min-width: 210px; }
+  .dir-toolbar .select { width: auto; min-width: 190px; }
+
+  .dir-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 12px;
+  }
+  .account-row-card {
+    padding: 15px 16px;
+    border-radius: 14px;
+    background: rgba(12, 19, 30, .76);
+    border: 1px solid rgba(181, 201, 229, .15);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .account-row-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(236, 200, 139, .48);
+    background: rgba(20, 30, 45, .86);
+  }
+  .account-row-card.is-self {
+    border-color: rgba(136, 198, 169, .48);
+    box-shadow: inset 0 0 22px rgba(136, 198, 169, .06);
+  }
+  .arc-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .arc-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(236, 200, 139, .1);
+    border: 1px solid rgba(236, 200, 139, .3);
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    color: #f3d59b;
+    flex-shrink: 0;
+  }
+  .arc-main {
+    min-width: 0;
+    flex: 1;
+  }
+  .arc-name-line {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+  .arc-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: #f4f1ea;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .arc-you {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(136, 198, 169, .16);
+    border: 1px solid rgba(136, 198, 169, .4);
+    color: #9fe0c2;
+    font-weight: 700;
+  }
+  .arc-sub {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .arc-chips {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    border-top: 1px solid rgba(181, 201, 229, .1);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .arc-xp {
+    color: #f3d59b;
+    font-weight: 700;
+  }
+
+  /* PLAYER INSPECT DRAWER */
+  .inspect-card {
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: rgba(9, 15, 24, .92);
+    border: 1px solid rgba(236, 200, 139, .42);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sql-helper {
+    margin-top: 4px;
+    border: 1px solid rgba(226, 197, 139, .22);
+    background: rgba(12, 18, 28, .65);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .sql-helper summary {
+    cursor: pointer;
+    color: #e7c993;
+    font-weight: 600;
+  }
+
+  /* TELEMETRY & /TRY */
+  .telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .stat-tile {
+    padding: 16px;
+    border-radius: 13px;
+    background: rgba(14, 22, 34, .68);
+    border: 1px solid rgba(181, 201, 229, .14);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  .stat-tile:hover {
+    background: rgba(28, 39, 55, .82);
+    border-color: rgba(216, 185, 129, .5);
+    transform: translateY(-3px);
+  }
+  .stat-tile-label {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .stat-tile-label span { color: var(--accent); }
+  .stat-tile-val {
+    font-size: 19px;
+    font-weight: 750;
+    color: #f3d59b;
+    margin-top: 2px;
+  }
+  .stat-tile-sub {
+    font-size: 11.5px;
+    color: var(--subtle);
+  }
+
+  .try-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .try-input-row {
+    display: flex;
+    gap: 8px;
+  }
+  .try-prefix {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 12px;
+    border-radius: 9px;
+    background: rgba(236, 200, 139, .14);
+    border: 1px solid rgba(236, 200, 139, .34);
+    color: #f3d59b;
+    font-family: Consolas, 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .try-log {
+    padding: 14px 16px;
+    border-radius: 11px;
+    background: rgba(9, 14, 22, .85);
+    border: 1px solid rgba(181, 201, 229, .18);
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: #d3deec;
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .try-outcome {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 11.5px;
+  }
+  .try-outcome.win {
+    color: #9fe0c2;
+    background: rgba(136, 198, 169, .16);
+    border: 1px solid rgba(136, 198, 169, .42);
+  }
+  .try-outcome.lose {
+    color: #f3aba0;
+    background: rgba(228, 135, 122, .16);
+    border: 1px solid rgba(228, 135, 122, .42);
+  }
+  .try-stats-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .try-stats-row strong { color: #f3d59b; }
+
+  /* ACHIEVEMENTS */
+  .ach-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .filter-pills {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+  .pill-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(162, 186, 213, .18);
+    background: rgba(28, 39, 55, .68);
+    color: #9eacc1;
+    font-size: 12.5px;
+    font-weight: 600;
+    transition: all .18s ease;
+  }
+  .pill-btn:hover {
+    border-color: rgba(221, 189, 123, .5);
+    color: #efdab6;
+  }
+  .pill-btn.active {
+    background: linear-gradient(120deg, #e6c68e, #ba945b);
+    color: #211a10;
+    border-color: rgba(230, 198, 142, .8);
+    font-weight: 700;
+  }
+
+  .hint-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+  }
+  .hint-toggle input { accent-color: #dcb87c; }
+
+  .ach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  .ach-card {
+    position: relative;
+    padding: 19px;
+    border-radius: 15px;
+    background: linear-gradient(145deg, rgba(30, 42, 59, .72), rgba(16, 25, 38, .88));
+    border: 1px solid rgba(172, 197, 229, .14);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .ach-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(216, 185, 129, .42);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .28);
+  }
+  .ach-card.unlocked {
+    border-color: rgba(226, 197, 139, .38);
+    box-shadow: inset 0 0 26px rgba(217, 183, 123, .05), 0 10px 28px rgba(0, 0, 0, .25);
+  }
+  .ach-card.unlocked[data-rarity="epic"] { border-color: rgba(182, 166, 232, .48); }
+  .ach-card.unlocked[data-rarity="secret"] {
+    border-color: rgba(236, 200, 139, .68);
+    background:
+      radial-gradient(260px 140px at 100% 0%, rgba(236, 200, 139, .16), transparent 72%),
+      linear-gradient(145deg, rgba(34, 44, 60, .88), rgba(16, 24, 36, .94));
+  }
+  .ach-card.locked { opacity: .84; }
+
+  .ach-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .ach-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    font-size: 21px;
+    background: rgba(233, 196, 133, .08);
+    border: 1px solid rgba(233, 196, 133, .24);
+    flex-shrink: 0;
+  }
+  .ach-card.locked .ach-icon {
+    filter: grayscale(.8);
+    opacity: .72;
+  }
+  .ach-badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .rarity-tag, .xp-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+  }
+  .xp-tag {
+    color: #f3d59b;
+    background: rgba(236, 200, 139, .12);
+    border-color: rgba(236, 200, 139, .3);
+  }
+  .rarity-tag[data-rarity="common"] { color: #b9d9eb; background: rgba(126, 200, 227, .1); border-color: rgba(126, 200, 227, .24); }
+  .rarity-tag[data-rarity="uncommon"] { color: #a7e0c5; background: rgba(136, 198, 169, .12); border-color: rgba(136, 198, 169, .28); }
+  .rarity-tag[data-rarity="rare"] { color: #bdd6f7; background: rgba(120, 166, 235, .14); border-color: rgba(120, 166, 235, .32); }
+  .rarity-tag[data-rarity="epic"] { color: #dcd2fa; background: rgba(182, 166, 232, .15); border-color: rgba(182, 166, 232, .36); }
+  .rarity-tag[data-rarity="secret"] { color: #ffe3aa; background: rgba(236, 200, 139, .18); border-color: rgba(236, 200, 139, .45); }
+
+  .ach-title {
+    font-weight: 750;
+    font-size: 15.5px;
+    color: #f1eee7;
+    line-height: 1.3;
+  }
+  .ach-desc {
+    font-size: 12.8px;
+    color: #95a6be;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .ach-prog {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .ach-prog-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .ach-prog-bar {
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(175, 196, 224, .14);
+    overflow: hidden;
+  }
+  .ach-prog-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #9f8053, #ecc88b);
+  }
+
+  .ach-foot {
+    padding-top: 10px;
+    border-top: 1px solid rgba(181, 201, 229, .12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 11.5px;
+  }
+  .ach-date {
+    font-size: 11px;
+    color: var(--emerald);
+    font-weight: 600;
+  }
+  .ach-link {
+    color: #ecc88b;
+    font-weight: 600;
+  }
+  .ach-link:hover { text-decoration: underline; }
+
+  .equip-mini-btn {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(236, 200, 139, .38);
+    background: rgba(236, 200, 139, .11);
+    color: #f3d59b;
+    font-size: 11px;
+    font-weight: 600;
+    transition: background .15s ease;
+  }
+  .equip-mini-btn:hover { background: rgba(236, 200, 139, .22); }
+  .equip-mini-btn.equipped {
+    border-color: rgba(136, 198, 169, .42);
+    background: rgba(136, 198, 169, .14);
+    color: #a7e0c5;
+    cursor: default;
+  }
+
+  .topic-mini-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .topic-mini-item {
+    padding: 10px 13px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, .03);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--text);
+    font-size: 13px;
+  }
+  .topic-mini-item:hover {
+    border-color: rgba(236, 200, 139, .45);
+    color: #f3d59b;
+  }
+  .topic-mini-status {
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .pedia-footer {
+    max-width: 1460px;
+    margin: 0 auto;
+    padding: 22px 4vw 38px;
+    border-top: 1px solid rgba(181, 201, 229, .12);
+    color: #71859f;
+    font-size: 11.5px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .pedia-footer a { color: #a9b8ca; }
+  .pedia-footer a:hover { color: #ecc88b; }
+
+  @media (max-width: 960px) {
+    .auth-gate-card { grid-template-columns: 1fr; }
+    .dossier-top { grid-template-columns: auto 1fr; }
+    .dossier-actions { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; }
+    .mid-grid { grid-template-columns: 1fr; }
+    .editor-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    header { height: auto; min-height: 72px; padding: 12px 18px; flex-wrap: wrap; gap: 14px; }
+    header .right { display: none; }
+    .wrap { padding: 22px 16px 52px; }
+    .dossier-card, .auth-gate-card { padding: 20px; }
+    .dossier-top { grid-template-columns: 1fr; }
+    .editor-grid, .telemetry-grid { grid-template-columns: 1fr; }
+    .try-input-row { flex-wrap: wrap; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true">
+  <div class="aura gold"></div>
+  <div class="aura teal"></div>
+  <div class="aura violet"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-beam"></div>
+  <div class="sparks"></div>
+  <div class="sparks second"></div>
+</div>
+
+<header>
+  <a class="brand" href="home.html" aria-label="Nova RP Pedia — главная">NOVA <b>RP</b><small>PEDIA · ПРОФИЛЬ</small></a>
+  <nav class="site-nav" aria-label="Разделы сайта">
+    <a href="home.html">Главная</a>
+    <a href="catalogs.html">Крафты</a>
+    <a href="weapons.html">Оружие</a>
+    <a href="maps.html">Карты</a>
+    <a href="forum.html">Форум</a>
+  </nav>
+  <div class="nova-header-end">
+    <div class="right">RU · GTA V</div>
+    <a class="nova-profile-btn is-current" id="novaProfileNavBtn" href="profile.html" aria-current="page">
+      <span class="npb-avatar" aria-hidden="true">◈</span>
+      <span class="npb-label">Профиль</span>
+      <span class="npb-badge">🔒 Вход</span>
+    </a>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="crumb">
+    <div><a href="home.html">Nova RP Pedia</a> &nbsp; / &nbsp; <span>Профиль и реестр аккаунтов</span></div>
+    <div class="quick-jumps">
+      <a href="#directory">👥 Список всех аккаунтов</a>
+      <a href="#achievements">★ Достижения (16)</a>
+      <a href="#tryWidget">🎲 Команда /try</a>
+    </div>
+  </nav>
+
+  <!-- 1A. GUEST AUTH GATE (SHOWN WHEN NOT LOGGED IN) -->
+  <section class="auth-gate-card" id="account" aria-label="Вход и регистрация аккаунта">
+    <div class="auth-gate-info">
+      <div class="panel-kicker">Авторизация в базе данных Nova RP Pedia</div>
+      <h1 class="auth-gate-title">Войдите или создайте аккаунт для достижений</h1>
+      <p class="panel-sub">Получение достижений, команда <code>/try</code>, ранги и титулы привязаны к вашему аккаунту в базе данных Supabase. Электронная почта не нужна — достаточно игрового никнейма и пароля.</p>
+      <div class="auth-perks">
+        <div class="auth-perk"><span>🪪</span><span><b>Личный Static ID и место в реестре:</b> каждый зарегистрированный аккаунт попадает в общий список жителей штата ниже.</span></div>
+        <div class="auth-perk"><span>🏆</span><span><b>16 необычных достижений:</b> открывайте титулы за планы крафта, тактические карты, ночные смены и секретные пасхалки.</span></div>
+        <div class="auth-perk"><span>☷</span><span><b>Единый аккаунт с форумом:</b> если у вас уже есть аккаунт на форуме Nova RP, просто войдите под ним.</span></div>
+      </div>
+    </div>
+
+    <div class="auth-form-box">
+      <div class="filter-pills" id="profileAuthTabs">
+        <button class="pill-btn active" type="button" data-mode="login">Вход</button>
+        <button class="pill-btn" type="button" data-mode="register">Создать аккаунт</button>
+        <button class="pill-btn" type="button" data-mode="reset">Сброс пароля</button>
+      </div>
+
+      <div class="status-note" id="accountMsg" hidden></div>
+
+      <form id="profileAuthForm" style="display:flex;flex-direction:column;gap:12px">
+        <div class="field">
+          <label for="pAuthLogin">Никнейм (3–24 латинских символа, цифры или _)</label>
+          <input class="input" id="pAuthLogin" type="text" required autocomplete="username" placeholder="Player_Name" />
+        </div>
+
+        <div class="field">
+          <label for="pAuthPassword" id="pAuthPassLabel">Пароль</label>
+          <input class="input" id="pAuthPassword" type="password" required autocomplete="current-password" placeholder="••••••••" />
+        </div>
+
+        <div class="field" id="pAuthSecretWrap" hidden>
+          <label for="pAuthSecret">Секретный ключ восстановления (мин. 16 символов — запишите его!)</label>
+          <div style="display:flex;gap:8px">
+            <input class="input" id="pAuthSecret" type="text" autocomplete="off" placeholder="Нажмите «Ключ» для генерации" />
+            <button class="btn" id="pGenSecretBtn" type="button">Ключ</button>
+          </div>
+        </div>
+
+        <button class="btn primary" id="pAuthSubmitBtn" type="submit">Войти и активировать профиль</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- 1B. SIGNED-IN CITIZEN DOSSIER (SHOWN WHEN LOGGED IN) -->
+  <section class="dossier-card" id="dossier" aria-label="Личное досье жителя" hidden>
+    <div class="dossier-top">
+      <div class="dossier-avatar" id="heroAvatarWrap">
+        <span id="heroAvatar">◈</span>
+        <span class="dossier-level-pill" id="heroLevelPill">LVL 1</span>
+      </div>
+
+      <div class="dossier-identity">
+        <div class="dossier-chips">
+          <span class="chip static-id" id="heroStaticId">Static #10000</span>
+          <span class="chip title-badge" id="heroTitleBadge">★ Гражданин штата</span>
+          <span class="chip faction-badge" id="heroFactionBadge">Свободный житель</span>
+          <span class="chip sync-badge online" id="heroSyncBadge">✓ Аккаунт подключён</span>
+        </div>
+        <h1 class="dossier-name" id="heroDisplayName">Участник</h1>
+        <p class="dossier-motto" id="heroMotto">Девиз не указан — откройте настройку досье, выберите фракцию и соберите редкие титулы за достижения.</p>
+      </div>
+
+      <div class="dossier-actions">
+        <button class="btn primary" id="toggleDossierBtn" type="button">✎ Настроить досье</button>
+        <button class="btn" id="copyCardBtn" type="button">Скопировать визитку</button>
+        <a class="btn" id="uEditorBtn" href="pedia-editor.html" hidden>Редактор Pedia →</a>
+        <button class="btn" id="uLogoutBtn" type="button">Выйти из аккаунта</button>
+      </div>
+    </div>
+
+    <div class="xp-strip">
+      <div class="xp-meta">
+        <div class="xp-rank-title">
+          <span id="xpLevelLabel">Уровень 1</span>
+          <strong id="xpRankName">Приезжий со спавна</strong>
+        </div>
+        <div class="xp-numbers">
+          <strong id="xpValueText">0</strong> / <span id="xpNextText">150</span> XP · Открыто <strong id="achCountText">0 / 16</strong> достижений
+        </div>
+      </div>
+      <div class="xp-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="xpProgressBar">
+        <div class="xp-fill" id="xpFill"></div>
+      </div>
+    </div>
+
+    <div class="status-note" id="signedInMsg" hidden></div>
+
+    <form class="dossier-editor" id="dossierForm" hidden>
+      <div class="field">
+        <label>Эмблема жителя (отображается в шапке и в общем реестре аккаунтов)</label>
+        <div class="avatar-picker" id="avatarPicker"></div>
+      </div>
+
+      <div class="editor-grid">
+        <div class="field">
+          <label for="dossierNameInput">Публичное имя аккаунта (в базе и на форуме, 2–40 симв.)</label>
+          <input class="input" id="dossierNameInput" type="text" minlength="2" maxlength="40" required placeholder="Например: Mason_Vance" />
+        </div>
+
+        <div class="field">
+          <label for="dossierFactionSelect">Организация / Фракция</label>
+          <select class="select" id="dossierFactionSelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="dossierTitleSelect">Активный титул (открываются за достижения)</label>
+          <select class="select" id="dossierTitleSelect"></select>
+        </div>
+
+        <div class="field span-full">
+          <label for="dossierMottoInput">РП-статус / заметка в личном деле</label>
+          <input class="input" id="dossierMottoInput" type="text" maxlength="140" placeholder="Например: Старший парамедик ночной смены Pillbox Hill · Страховки без очереди" />
+        </div>
+      </div>
+
+      <div class="editor-foot">
+        <span class="status-note" id="dossierSaveNote">Имя аккаунта сразу обновляется в таблице <code>pedia_profiles</code> вашей базы Supabase.</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="cancelDossierBtn" type="button">Свернуть</button>
+          <button class="btn primary" type="submit">Сохранить в профиль</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- USER FORUM TOPICS SUMMARY -->
+    <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <span style="font-weight:700;font-size:13.5px;color:#e7dfd0">Мои публикации на форуме</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="chip" id="uForumTotals">0 тем · 0 комм.</span>
+          <a class="ach-link" href="forum.html">Перейти на форум →</a>
+        </div>
+      </div>
+      <div class="topic-mini-list" id="uTopicsList"></div>
+    </div>
+  </section>
+
+  <!-- 2. PUBLIC DIRECTORY OF ALL ACCOUNTS IN SUPABASE -->
+  <section class="panel" id="directory" aria-label="Общий список всех аккаунтов">
+    <div class="panel-head">
+      <div>
+        <div class="panel-kicker">База данных · pedia_profiles</div>
+        <h2>Общий список всех аккаунтов <span id="dirCountBadge" class="chip" style="margin-left:6px;vertical-align:middle">0</span></h2>
+        <p class="panel-sub">Живой реестр всех зарегистрированных пользователей Nova RP Pedia из вашей базы Supabase. Нажмите на карточку жителя, чтобы открыть его визитку.</p>
+      </div>
+      <button class="btn" id="refreshDirBtn" type="button">↻ Обновить список</button>
+    </div>
+
+    <div class="dir-toolbar">
+      <input class="input" id="dirSearchInput" type="search" placeholder="Поиск по никнейму, Static #ID или титулу…" aria-label="Поиск аккаунта" />
+      <select class="select" id="dirSortSelect" aria-label="Сортировка аккаунтов">
+        <option value="xp">Сначала выше по XP / уровню</option>
+        <option value="newest">Сначала новые аккаунты</option>
+        <option value="oldest">Сначала старожилы</option>
+        <option value="activity">По активности на форуме</option>
+        <option value="name">По алфавиту (A–Я)</option>
+      </select>
+    </div>
+
+    <div class="inspect-card" id="inspectedPlayerCard" hidden></div>
+
+    <div class="dir-grid" id="dirGrid">
+      <span class="panel-sub">Загрузка списка аккаунтов из Supabase…</span>
+    </div>
+
+    <details class="sql-helper" id="cloudSqlNotice" hidden>
+      <summary>⚙ Как включить облачный рейтинг XP и достижений в таблице pedia_profiles (SQL-скрипт)</summary>
+      <p style="margin-top:8px;line-height:1.65">Сейчас таблица <code>pedia_profiles</code> хранит базовые поля (<code>id, display_name, created_at</code>), поэтому список аккаунтов уже работает! Чтобы у всех игроков в этом списке также отображались их уровень, XP, фракция и открытые достижения с любого устройства, выполните файл <code>profile-setup.sql</code> в <strong>Supabase Dashboard → SQL Editor</strong>.</p>
+      <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn primary" id="copySqlSetupBtn" type="button">Скопировать SQL (profile-setup.sql)</button>
+        <span id="copySqlStatus" class="status-note"></span>
+      </div>
+    </details>
+  </section>
+
+  <!-- 3. CROSS-SITE TELEMETRY & /TRY WIDGET -->
+  <div class="mid-grid">
+    <section class="panel" aria-label="Сводка по разделам Pedia">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">Живая телеметрия</div>
+          <h2>След жителя в штате</h2>
+          <p class="panel-sub">Ваши расчёты крафта, пометки на картах и изученные вкладки автоматически засчитываются в достижения вашего аккаунта.</p>
+        </div>
+      </div>
+
+      <div class="telemetry-grid">
+        <a class="stat-tile" href="index.html">
+          <span class="stat-tile-label">Арсенал Госструктур <span>→</span></span>
+          <strong class="stat-tile-val" id="statGovSpent">0 мат.</strong>
+          <span class="stat-tile-sub" id="statGovSub">План пуст · нажмите, чтобы собрать</span>
+        </a>
+
+        <a class="stat-tile" href="ems.html">
+          <span class="stat-tile-label">Склад EMS <span>→</span></span>
+          <strong class="stat-tile-val" id="statEmsSpent">0 мат.</strong>
+          <span class="stat-tile-sub" id="statEmsSub">План пуст · медикаменты и страховки</span>
+        </a>
+
+        <a class="stat-tile" href="maps.html">
+          <span class="stat-tile-label">Штабные карты <span>→</span></span>
+          <strong class="stat-tile-val" id="statMapsCount">0 фигур</strong>
+          <span class="stat-tile-sub" id="statMapsSub">Форт Занкудо и Федеральная тюрьма</span>
+        </a>
+
+        <a class="stat-tile" href="weapons.html">
+          <span class="stat-tile-label">Маршрут по Pedia <span>→</span></span>
+          <strong class="stat-tile-val" id="statTourCount">0 / 6 вкладок</strong>
+          <span class="stat-tile-sub" id="statWeaponsSub">Категорий оружия изучено: 0</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="panel" id="tryWidget" aria-label="Ролевая команда /try">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">РП-рандомайзер</div>
+          <h2>Испытание удачи <code>/try</code></h2>
+          <p class="panel-sub">Классическая команда GTA V RP с честным шансом 50/50. Выбейте 3 раза подряд «Удачно» под своим аккаунтом для секретного достижения!</p>
+        </div>
+        <button class="btn" id="randomTryScenarioBtn" type="button" title="Случайная РП-ситуация">🎲 Сюжет</button>
+      </div>
+
+      <div class="try-box">
+        <form class="try-input-row" id="tryForm">
+          <span class="try-prefix">/try</span>
+          <input class="input" id="tryActionInput" type="text" maxlength="110" value="найти заначку материалов за обшивкой патрульки" aria-label="Действие для команды /try" />
+          <button class="btn primary" id="trySubmitBtn" type="submit">Бросить</button>
+        </form>
+
+        <div class="try-log" id="tryResultBox">
+          <span id="tryResultText">* Войдите в аккаунт и проверьте благосклонность рандома.</span>
+          <span class="try-outcome" id="tryOutcomeBadge" hidden>Удачно</span>
+        </div>
+
+        <div class="try-stats-row">
+          <span>Бросков: <strong id="tryTotalCount">0</strong> (<span id="tryWinRate">0%</span> удач)</span>
+          <span>Текущая серия: <strong id="tryCurrentStreak">0</strong> · Рекорд: <strong id="tryBestStreak">0</strong> подряд</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 4. UNUSUAL ACHIEVEMENTS -->
+  <section class="panel" id="achievements" aria-label="Необычные достижения">
+    <div class="panel-head">
+      <div>
+        <div class="panel-kicker">Зал славы Nova RP Pedia</div>
+        <h2>Необычные достижения штата</h2>
+        <p class="panel-sub">Достижения открываются только у авторизованных игроков — войдите в аккаунт или зарегистрируйтесь выше, чтобы сохранять прогресс и редкие титулы.</p>
+      </div>
+    </div>
+
+    <div class="lock-callout" id="achGuestLockBanner">
+      <span>🔒 <strong>Режим просмотра:</strong> сейчас вы не вошли в аккаунт, поэтому достижения заблокированы.</span>
+      <a class="btn primary" href="#account">Войти / Создать аккаунт ↑</a>
+    </div>
+
+    <div class="ach-controls">
+      <div class="filter-pills" id="achFilterBar" role="tablist" aria-label="Фильтр достижений">
+        <button class="pill-btn active" type="button" data-filter="all">Все (16)</button>
+        <button class="pill-btn" type="button" data-filter="unlocked">Открытые</button>
+        <button class="pill-btn" type="button" data-filter="locked">Не открытые</button>
+        <button class="pill-btn" type="button" data-filter="secret">Секретные (3)</button>
+      </div>
+
+      <label class="hint-toggle">
+        <input type="checkbox" id="secretHintsToggle" />
+        <span>Показывать загадки-подсказки к секретным достижениям</span>
+      </label>
+    </div>
+
+    <div class="ach-grid" id="achGrid"></div>
+  </section>
+</main>
+
+<footer class="pedia-footer">
+  <a href="home.html">← Главная Pedia</a>
+  <span>NOVA RP PEDIA · Профиль и реестр аккаунтов</span>
+  <span><a href="catalogs.html">Крафты</a> · <a href="weapons.html">Оружие</a> · <a href="maps.html">Карты</a> · <a href="forum.html">Форум</a></span>
+  <span>Сделано с помощью ИИ, главный разработчик — <a href="https://space.ru" target="_blank" rel="noopener noreferrer">space.ru</a></span>
+</footer>
+
+<script src="vendor/supabase.js"></script>
+<script src="supabase-config.js"></script>
+<script src="achievements.js"></script>
+<script src="profile.js"></script>
+</body>
+</html>
