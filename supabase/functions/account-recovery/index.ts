@@ -15,7 +15,9 @@ function normalizedSecret(v: unknown){return typeof v==='string'?v.normalize('NF
 async function loginEmail(login: string){const v=login.trim().toLowerCase();if(v.includes('@'))return v;if(!/^[a-z0-9_]{3,24}$/.test(v))throw Error('Ник: 3–24 латинских буквы, цифры или _.');return (await sha(v))+'@accounts.novarp.invalid';}
 Deno.serve(async req=>{
  const origin=req.headers.get('origin')||'';
- const allowed=(Deno.env.get('ALLOWED_ORIGINS')||'https://craftnovarp.netlify.app').split(',').map(v=>v.trim());
+ const defaults=['https://space.layero.app','https://craftnovarp.netlify.app'];
+ const configured=(Deno.env.get('ALLOWED_ORIGINS')||'').split(',').map(v=>v.trim()).filter(Boolean);
+ const allowed=[...new Set([...defaults,...configured])];
  const headers={'Content-Type':'application/json; charset=utf-8','Access-Control-Allow-Origin':allowed.includes(origin)?origin:allowed[0],'Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Vary':'Origin','Cache-Control':'no-store'};
  const reply=(status:number,message:string)=>new Response(JSON.stringify({message}),{status,headers});
  if(origin&&!allowed.includes(origin))return reply(403,'Этот адрес сайта не разрешён.');
