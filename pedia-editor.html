@@ -1,4 +1,282 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Редактор Pedia — Nova RP</title><link rel="stylesheet" href="profile-nav.css"><style>
-:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#182330,#090d13 72%);color:#e9edf4;font:14px 'Segoe UI',Arial,sans-serif;min-height:100vh}a{color:#e7c994;text-decoration:none}header{height:78px;padding:0 5vw;display:flex;align-items:center;border-bottom:1px solid #b5c9e522;background:#101722aa;gap:20px}.brand{font-size:24px;font-weight:900;color:#fff}.brand b{color:#ecc88b}.brand small{display:block;font-size:9px;letter-spacing:3px;color:#8692a5}.wrap{max-width:1350px;margin:auto;padding:34px 4vw 70px}h1{margin:0 0 8px;font-size:32px}h2{font-size:18px}.muted{color:#92a2b7;line-height:1.7}.panel{background:#142030d9;border:1px solid #b5c9e522;border-radius:14px;padding:22px;margin:18px 0}.grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px}.columns{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:block;margin:12px 0;color:#aebdd0;font-size:12px}.field input,.field textarea,.field select{display:block;width:100%;margin-top:7px;background:#0d1622;border:1px solid #b5c9e533;border-radius:8px;padding:11px 13px;color:#eef2f8;font:inherit}.field textarea{min-height:130px;resize:vertical;line-height:1.65}.btn{border:1px solid #d6b77b55;border-radius:7px;padding:10px 15px;color:#edd19e;background:#d0af7710;cursor:pointer;font:inherit}.btn:hover{background:#d0af7722}.btn.primary{background:linear-gradient(115deg,#e7c994,#c4a06a);color:#211a10;font-weight:700}.btn.danger{border-color:#df878766;color:#f0a59a}.btn:disabled{opacity:.55;cursor:wait}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.list{display:flex;flex-direction:column;gap:8px;margin-top:14px}.list button{width:100%;text-align:left;border:1px solid #b5c9e522;background:#0d1622a8;color:#d6e0ed;padding:12px;border-radius:8px;cursor:pointer}.list button:hover,.list button.active{border-color:#dbbd82;color:#f0d5a3}.status{padding:13px 16px;border:1px solid #c5b07444;border-radius:9px;color:#e3c68e;margin:15px 0;white-space:pre-wrap;overflow-wrap:anywhere}.status.error{border-color:#e4877a66;color:#f0a59a}.badge{font-size:10px;color:#a8c9b7;margin-left:8px}.hint{font-size:11px;color:#8495aa;line-height:1.7}.hidden{display:none!important}.section-item small{display:block;color:#8394aa;margin-top:5px}@media(max-width:850px){.grid,.columns{grid-template-columns:1fr}.wrap{padding:25px 16px}.panel{padding:17px}h1{font-size:26px}}
-</style></head><body><header><a class="brand" href="home.html">NOVA <b>RP</b><small>PEDIA · РЕДАКТОР</small></a><a href="home.html#sections">← К энциклопедии</a><div class="nova-header-end"><a href="forum.html">Форум / аккаунт</a><a class="nova-profile-btn" id="novaProfileNavBtn" href="profile.html"><span class="npb-avatar" aria-hidden="true">◈</span><span class="npb-label">Профиль</span><span class="npb-badge">🔒 Вход</span></a></div></header><main class="wrap"><h1>Редактор энциклопедии</h1><p class="muted">Назначенные владельцем модераторы могут сразу менять карточки разделов и публиковать статьи. Изменения сохраняются в Supabase.</p><div id="status" class="status">Проверяем права доступа…</div><div id="editor" class="hidden"><div class="grid"><section class="panel"><div class="row" style="justify-content:space-between"><h2>Разделы</h2><button class="btn" id="newSection">＋ Новый</button></div><p class="hint">Выберите карточку, чтобы изменить её заголовок, описание, значок или порядок.</p><div id="sectionList" class="list"></div></section><section class="panel"><h2 id="sectionHeading">Новый раздел</h2><form id="sectionForm"><div class="columns"><label class="field">URL-ключ (slug)<input id="slug" required pattern="[a-z0-9][a-z0-9-]{1,63}" placeholder="например, fishing"></label><label class="field">Значок<input id="icon" maxlength="12" value="◇"></label></div><label class="field">Название<input id="title" required minlength="2" maxlength="100"></label><label class="field">Описание карточки<textarea id="description" rows="2" maxlength="500"></textarea></label><div class="columns"><label class="field">Ссылка карточки<input id="href" placeholder="Оставьте пустым для страницы статей"></label><label class="field">Порядок отображения<input id="sortOrder" type="number" value="100"></label></div><div class="row"><label class="field"><input id="active" type="checkbox" checked style="display:inline;width:auto"> Показывать раздел</label><label class="field"><input id="isTool" type="checkbox" style="display:inline;width:auto"> Это инструмент, а не статья</label></div><p class="hint">Для новой статьи создайте раздел. Slug — латиницей, строчными буквами, цифрами и дефисом; при редактировании существующего раздела он зафиксирован.</p><div class="row"><button class="btn primary" type="submit" id="saveSection">Сохранить раздел</button><button class="btn danger" type="button" id="deleteSection">Удалить раздел</button></div></form></section></div>
-<section class="panel"><div class="row" style="justify-content:space-between"><div><h2>Статьи выбранного раздела</h2><p class="hint">Текст отображается безопасно как обычный текст с сохранением переносов строк.</p></div><button class="btn" id="newArticle">＋ Новая статья</button></div><div class="columns"><div><div id="articleList" class="list"></div></div><div><form id="articleForm"><input id="articleId" type="hidden"><div class="columns"><label class="field">Заголовок (пункт в раскрывающемся меню)<input id="articleTitle" required minlength="3" maxlength="160" placeholder="Например: Регистрация"></label><label class="field">Порядок в меню<input id="articleSortOrder" type="number" value="10"></label></div><label class="field">Краткое описание<textarea id="articleSummary" rows="2" maxlength="500"></textarea></label><label class="field">Текст статьи<textarea id="articleBody" rows="12" maxlength="50000" placeholder="Добавьте проверенные сведения, шаги и источники. Подзаголовки начинайте с ## "></textarea></label><label class="field"><input id="published" type="checkbox" checked style="display:inline;width:auto"> Опубликована сразу (отображается в боковом меню и разделе)</label><div class="row"><button class="btn primary" type="submit" id="saveArticle">Сохранить и опубликовать</button><button class="btn danger" type="button" id="deleteArticle">Удалить статью</button></div></form></div></div></section></div></main><footer style="max-width:1200px;margin:0 auto;padding:18px 4vw 28px;border-top:1px solid #b5c9e51c;color:#8494aa;font-size:11px">Сделано с помощью ИИ, главный разработчик — <a href="https://space.ru" target="_blank" rel="noopener noreferrer" style="color:#e5c28b">space.ru</a></footer><script src="vendor/supabase.js"></script><script src="supabase-config.js"></script><script src="pedia-editor.js"></script><script src="achievements.js"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Редактор Pedia — Nova RP</title>
+<link rel="stylesheet" href="profile-nav.css">
+<link rel="stylesheet" href="pedia-richtext.css?v=3">
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#182330,#090d13 72%);color:#e9edf4;font:14px 'Segoe UI',Arial,sans-serif;min-height:100vh}
+a{color:#e7c994;text-decoration:none}
+header{height:78px;padding:0 5vw;display:flex;align-items:center;border-bottom:1px solid #b5c9e522;background:#101722aa;gap:20px}
+.brand{font-size:24px;font-weight:900;color:#fff}.brand b{color:#ecc88b}.brand small{display:block;font-size:9px;letter-spacing:3px;color:#8692a5}
+.wrap{max-width:1440px;margin:auto;padding:34px 4vw 70px}
+h1{margin:0 0 8px;font-size:32px}
+h2{font-size:18px;margin:0}
+.muted{color:#92a2b7;line-height:1.7}
+.panel{background:#142030d9;border:1px solid #b5c9e522;border-radius:14px;padding:22px;margin:18px 0}
+.grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+.article-grid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:22px;align-items:start;margin-top:16px}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:block;margin:12px 0;color:#aebdd0;font-size:12px}
+.field input,.field textarea,.field select{display:block;width:100%;margin-top:7px;background:#0b121c;border:1px solid #b5c9e533;border-radius:8px;padding:11px 13px;color:#eef2f8;font:inherit}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:#ecc88b}
+.field textarea{min-height:90px;resize:vertical;line-height:1.65}
+.btn{border:1px solid #d6b77b55;border-radius:7px;padding:10px 15px;color:#edd19e;background:#d0af7710;cursor:pointer;font:inherit;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:#d0af7722}
+.btn.primary{background:linear-gradient(115deg,#e7c994,#c4a06a);color:#211a10;font-weight:700}
+.btn.danger{border-color:#df878766;color:#f0a59a}
+.btn:disabled{opacity:.55;cursor:wait}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.list button{width:100%;text-align:left;border:1px solid #b5c9e522;background:#0d1622a8;color:#d6e0ed;padding:12px;border-radius:8px;cursor:pointer;font:inherit}
+.list button:hover,.list button.active{border-color:#dbbd82;color:#f0d5a3;background:#182436}
+.status{padding:13px 16px;border:1px solid #c5b07444;border-radius:9px;color:#e3c68e;margin:15px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.status.error{border-color:#e4877a66;color:#f0a59a}
+.hint{font-size:11.5px;color:#8495aa;line-height:1.7;margin:6px 0 0}
+.hidden{display:none!important}
+.section-item small{display:block;color:#8394aa;margin-top:5px}
+
+/* Rich-Text Visual Editor Shell */
+.rt-editor-shell{margin:14px 0;border:1px solid #b5c9e536;border-radius:12px;background:#0a0f17;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,.35)}
+.rt-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding:10px 12px;background:#111a27;border-bottom:1px solid #b5c9e524}
+.rt-sep{width:1px;height:24px;background:#b5c9e524;margin:0 3px}
+.rt-select{background:#0b121c;border:1px solid #b5c9e530;color:#e6ecf5;border-radius:6px;padding:6px 9px;font-size:12px;cursor:pointer}
+.rt-tool-btn{min-width:31px;height:31px;padding:0 8px;border:1px solid #b5c9e522;border-radius:6px;background:#172334;color:#dce5f2;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all .14s}
+.rt-tool-btn:hover{border-color:#ecc88b88;color:#fff;background:#213148}
+.rt-tool-btn.active{border-color:#ecc88b;background:#ecc88b26;color:#f5d9a4}
+.rt-swatches{display:inline-flex;align-items:center;gap:5px;padding:0 4px}
+.rt-swatch{width:21px;height:21px;border-radius:50%;border:2px solid rgba(255,255,255,.28);padding:0;cursor:pointer;transition:transform .12s,border-color .12s}
+.rt-swatch:hover{transform:scale(1.15);border-color:#fff}
+.rt-color-picker-label{position:relative;display:inline-flex;align-items:center;gap:5px;height:31px;padding:0 9px;border-radius:6px;border:1px solid #b5c9e528;background:#172334;color:#dce5f2;font-size:12px;cursor:pointer}
+.rt-color-picker-label:hover{border-color:#ecc88b88;color:#fff}
+.rt-color-picker-label input[type="color"]{width:18px;height:18px;border:0;padding:0;background:none;cursor:pointer}
+
+/* Inline Popover Bar for Links / Images */
+.rt-popover{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;background:#152233;border-bottom:1px solid #ecc88b33}
+.rt-popover input,.rt-popover select{background:#090f17;border:1px solid #b5c9e538;border-radius:6px;padding:7px 10px;color:#fff;font-size:12.5px}
+.rt-popover input{min-width:210px;flex:1}
+
+/* Editable WYSIWYG Canvas — identical visual feel to article.html */
+.rt-canvas{min-height:420px;max-height:74vh;overflow-y:auto;padding:26px 30px;background:#0b0f16;outline:none;cursor:text}
+.rt-canvas:focus{box-shadow:inset 0 0 0 1px rgba(236,200,139,.28)}
+.rt-canvas:empty:before{content:attr(data-placeholder);color:#5e7088;pointer-events:none}
+.rt-source-area{width:100%;min-height:420px;padding:20px;border:0;background:#080c12;color:#d8e3f2;font:13px/1.65 Consolas,Monaco,monospace;resize:vertical;outline:none}
+
+@media(max-width:960px){
+  .grid,.article-grid,.columns{grid-template-columns:1fr}
+  .wrap{padding:25px 16px}
+  .panel{padding:17px}
+  .rt-canvas{padding:18px}
+  h1{font-size:26px}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="home.html">NOVA <b>RP</b><small>PEDIA · РЕДАКТОР</small></a>
+  <a href="home.html#sections">← К энциклопедии</a>
+  <div class="nova-header-end">
+    <a href="forum.html">Форум / аккаунт</a>
+    <a class="nova-profile-btn" id="novaProfileNavBtn" href="profile.html"><span class="npb-avatar" aria-hidden="true">◈</span><span class="npb-label">Профиль</span><span class="npb-badge">🔒 Вход</span></a>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Редактор энциклопедии</h1>
+  <p class="muted">Каждая статья открывается на собственной отдельной странице. Выделяйте текст мышкой и меняйте его цвет, выравнивание, списки, ссылки и инфо-рамки ⓘ прямо в визуальном редакторе.</p>
+  <div id="status" class="status">Проверяем права доступа…</div>
+
+  <div id="editor" class="hidden">
+    <div class="grid">
+      <section class="panel">
+        <div class="row" style="justify-content:space-between">
+          <h2>Разделы меню</h2>
+          <button class="btn" id="newSection" type="button">＋ Новый</button>
+        </div>
+        <p class="hint">Выберите раздел, чтобы изменить его название или управлять вложенными статьями.</p>
+        <div id="sectionList" class="list"></div>
+      </section>
+
+      <section class="panel">
+        <h2 id="sectionHeading">Новый раздел</h2>
+        <form id="sectionForm">
+          <div class="columns">
+            <label class="field">URL-ключ (slug)<input id="slug" required pattern="[a-z0-9][a-z0-9-]{1,63}" placeholder="например, start"></label>
+            <label class="field">Значок (puzzle, flag, car, cube или символ)<input id="icon" maxlength="12" value="puzzle"></label>
+          </div>
+          <label class="field">Название раздела<input id="title" required minlength="2" maxlength="100"></label>
+          <label class="field">Описание карточки на главной<textarea id="description" rows="2" maxlength="500"></textarea></label>
+          <div class="columns">
+            <label class="field">Особая ссылка (оставьте пустым для статей)<input id="href" placeholder="Оставьте пустым для обычного раздела со статьями"></label>
+            <label class="field">Порядок раздела<input id="sortOrder" type="number" value="100"></label>
+          </div>
+          <div class="row">
+            <label class="field"><input id="active" type="checkbox" checked style="display:inline;width:auto"> Показывать раздел</label>
+            <label class="field"><input id="isTool" type="checkbox" style="display:inline;width:auto"> Это инструмент, а не раздел статей</label>
+          </div>
+          <div class="row">
+            <button class="btn primary" type="submit" id="saveSection">Сохранить раздел</button>
+            <button class="btn danger" type="button" id="deleteSection">Удалить раздел</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <h2>Статьи выбранного раздела</h2>
+          <p class="hint">Каждая статья — отдельный пункт в раскрывающемся боковом меню и отдельная страница чтения без смешивания с другими статьями.</p>
+        </div>
+        <div class="row">
+          <a class="btn hidden" id="openArticleLive" href="article.html" target="_blank" rel="noopener">↗ Открыть статью на сайте</a>
+          <button class="btn" id="newArticle" type="button">＋ Новая статья</button>
+        </div>
+      </div>
+
+      <div class="article-grid">
+        <div>
+          <div id="articleList" class="list" style="margin-top:0"></div>
+        </div>
+
+        <div>
+          <form id="articleForm">
+            <input id="articleId" type="hidden">
+            <div class="columns">
+              <label class="field">Название статьи (в меню и заголовке страницы)<input id="articleTitle" required minlength="3" maxlength="160" placeholder="Например: Установка игры GTA V"></label>
+              <label class="field">Порядок в меню<input id="articleSortOrder" type="number" value="10"></label>
+            </div>
+            <label class="field">Подзаголовок (необязательно — оставьте пустым, если не нужна верхняя плашка)<input id="articleSummary" maxlength="500" placeholder="Необязательное краткое пояснение над статьёй"></label>
+
+            <div class="rt-editor-shell">
+              <div class="rt-toolbar" role="toolbar" aria-label="Форматирование текста">
+                <select class="rt-select" id="rtBlockSelect" title="Тип текста / заголовок">
+                  <option value="P">Обычный текст</option>
+                  <option value="H2">Заголовок крупный</option>
+                  <option value="H3">Подзаголовок</option>
+                  <option value="H4">Малый заголовок</option>
+                  <option value="BLOCKQUOTE">Цитата с линией</option>
+                </select>
+
+                <select class="rt-select" id="rtSizeSelect" title="Размер шрифта выделенного текста">
+                  <option value="">Размер шрифта</option>
+                  <option value="13px">Мелкий (13px)</option>
+                  <option value="15px">Стандарт (15px)</option>
+                  <option value="18px">Крупный (18px)</option>
+                  <option value="22px">Большой (22px)</option>
+                  <option value="26px">Заглавный (26px)</option>
+                </select>
+
+                <span class="rt-sep"></span>
+
+                <button type="button" class="rt-tool-btn" data-cmd="bold" title="Жирный (Ctrl+B)"><b>B</b></button>
+                <button type="button" class="rt-tool-btn" data-cmd="italic" title="Курсив (Ctrl+I)"><i>I</i></button>
+                <button type="button" class="rt-tool-btn" data-cmd="underline" title="Подчёркнутый (Ctrl+U)"><u>U</u></button>
+                <button type="button" class="rt-tool-btn" data-cmd="strikeThrough" title="Зачёркнутый"><s>S</s></button>
+
+                <span class="rt-sep"></span>
+
+                <button type="button" class="rt-tool-btn" data-cmd="justifyLeft" title="По левому краю">⫷</button>
+                <button type="button" class="rt-tool-btn" data-cmd="justifyCenter" title="По центру (как заголовок на скрине)">⫼ По центру</button>
+                <button type="button" class="rt-tool-btn" data-cmd="justifyRight" title="По правому краю">⫸</button>
+
+                <span class="rt-sep"></span>
+
+                <div class="rt-swatches" aria-label="Быстрые цвета текста">
+                  <button type="button" class="rt-swatch" data-color="#ffffff" title="Белый" style="background:#ffffff"></button>
+                  <button type="button" class="rt-swatch" data-color="#e4eaf3" title="Светло-серый (основной)" style="background:#e4eaf3"></button>
+                  <button type="button" class="rt-swatch" data-color="#e05252" title="Красный акцент" style="background:#e05252"></button>
+                  <button type="button" class="rt-swatch" data-color="#ecc88b" title="Золотой Nova RP" style="background:#ecc88b"></button>
+                  <button type="button" class="rt-swatch" data-color="#4ade80" title="Зелёный" style="background:#4ade80"></button>
+                  <button type="button" class="rt-swatch" data-color="#60a5fa" title="Голубой" style="background:#60a5fa"></button>
+                  <button type="button" class="rt-swatch" data-color="#fb923c" title="Оранжевый" style="background:#fb923c"></button>
+                  <button type="button" class="rt-swatch" data-color="#c084fc" title="Фиолетовый" style="background:#c084fc"></button>
+                </div>
+
+                <label class="rt-color-picker-label" title="Выбрать любой свой цвет текста">
+                  <input type="color" id="rtCustomColor" value="#e05252">
+                  <span>Свой цвет</span>
+                </label>
+
+                <button type="button" class="rt-tool-btn" id="rtClearFormat" title="Очистить цвет и форматирование выделенного текста">⌫ Сброс</button>
+
+                <span class="rt-sep"></span>
+
+                <button type="button" class="rt-tool-btn" data-cmd="insertUnorderedList" title="Маркированный список с точками •">• Список</button>
+                <button type="button" class="rt-tool-btn" data-cmd="insertOrderedList" title="Нумерованный список 1. 2. 3.">1. Список</button>
+
+                <span class="rt-sep"></span>
+
+                <button type="button" class="rt-tool-btn" data-callout="red" title="Вставить важный инфо-блок в рамке со значком ⓘ" style="color:#f07575;border-color:#e0525255">ⓘ Инфо-рамка</button>
+                <button type="button" class="rt-tool-btn" data-callout="gold" title="Вставить золотой инфо-блок со значком ⓘ" style="color:#ecc88b;border-color:#ecc88b55">ⓘ Рамка Gold</button>
+                <button type="button" class="rt-tool-btn" id="rtUnwrapCallout" title="Убрать рамку у текущего инфо-блока">✕ Без рамки</button>
+
+                <span class="rt-sep"></span>
+
+                <button type="button" class="rt-tool-btn" id="rtLinkBtn" title="Вставить кликабельную цветную ссылку">🔗 Ссылка</button>
+                <button type="button" class="rt-tool-btn" id="rtImageBtn" title="Вставить картинку по URL">🖼 Картинка</button>
+                <button type="button" class="rt-tool-btn" data-cmd="insertHorizontalRule" title="Горизонтальная линия-разделитель">― Линия</button>
+                <button type="button" class="rt-tool-btn" data-cmd="undo" title="Отменить">↶</button>
+                <button type="button" class="rt-tool-btn" data-cmd="redo" title="Повторить">↷</button>
+                <button type="button" class="rt-tool-btn" id="rtSourceToggle" title="Переключить режим HTML-разметки">&lt;/&gt; Код</button>
+              </div>
+
+              <!-- Link Insertion Bar -->
+              <div class="rt-popover hidden" id="rtLinkBar">
+                <input type="text" id="rtLinkText" placeholder="Текст ссылки (например: Steam)">
+                <input type="url" id="rtLinkUrl" placeholder="https://store.steampowered.com/...">
+                <select id="rtLinkColor" title="Цвет ссылки">
+                  <option value="#e05252">Красный (как на скрине)</option>
+                  <option value="#ecc88b">Золотой Nova RP</option>
+                  <option value="#60a5fa">Голубой</option>
+                  <option value="#4ade80">Зелёный</option>
+                  <option value="#ffffff">Белый</option>
+                </select>
+                <button type="button" class="btn primary" id="rtLinkApply" style="padding:7px 13px">Вставить</button>
+                <button type="button" class="btn" id="rtUnlinkBtn" style="padding:7px 11px">Убрать ссылку</button>
+                <button type="button" class="btn" id="rtLinkCancel" style="padding:7px 11px">Закрыть</button>
+              </div>
+
+              <!-- Image Insertion Bar -->
+              <div class="rt-popover hidden" id="rtImageBar">
+                <input type="url" id="rtImageUrl" placeholder="Прямая ссылка на картинку (https://...)">
+                <input type="text" id="rtImageAlt" placeholder="Описание картинки (необязательно)">
+                <button type="button" class="btn primary" id="rtImageApply" style="padding:7px 13px">Вставить картинку</button>
+                <button type="button" class="btn" id="rtImageCancel" style="padding:7px 11px">Закрыть</button>
+              </div>
+
+              <!-- Visual WYSIWYG Canvas -->
+              <div id="rtEditor" class="rt-canvas rt-content" contenteditable="true" spellcheck="true" data-placeholder="Начните писать статью или вставьте текст… Выделяйте любые слова мышкой, чтобы поменять цвет, сделать жирным, выровнять по центру, добавить список или ⓘ инфо-рамку."></div>
+
+              <!-- Optional Raw HTML Source View -->
+              <textarea id="articleBody" class="rt-source-area hidden" spellcheck="false" maxlength="50000" placeholder="HTML-разметка статьи"></textarea>
+            </div>
+
+            <label class="field"><input id="published" type="checkbox" checked style="display:inline;width:auto"> Опубликована сразу (отображается в боковом меню раздела)</label>
+
+            <div class="row">
+              <button class="btn primary" type="submit" id="saveArticle">Сохранить и опубликовать</button>
+              <button class="btn danger" type="button" id="deleteArticle">Удалить статью</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer style="max-width:1440px;margin:0 auto;padding:18px 4vw 28px;border-top:1px solid #b5c9e51c;color:#8494aa;font-size:11px">
+  Сделано с помощью ИИ, главный разработчик — <a href="https://space.ru" target="_blank" rel="noopener noreferrer" style="color:#e5c28b">space.ru</a>
+</footer>
+
+<script src="vendor/supabase.js"></script>
+<script src="supabase-config.js?v=3"></script>
+<script src="pedia-richtext.js?v=3"></script>
+<script src="pedia-editor.js?v=3"></script>
+<script src="achievements.js"></script>
+</body>
+</html>

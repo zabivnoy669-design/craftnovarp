@@ -1,0 +1,227 @@
+/* Nova RP Pedia — Rich Article Content & Callout Blocks */
+.rt-content {
+  color: #e4eaf3;
+  font-size: 15px;
+  line-height: 1.76;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.rt-content > *:first-child {
+  margin-top: 0;
+}
+
+.rt-content > *:last-child {
+  margin-bottom: 0;
+}
+
+.rt-content p {
+  margin: 0 0 14px;
+  color: inherit;
+  font-size: inherit;
+  line-height: 1.76;
+}
+
+.rt-content h2 {
+  font-size: 23px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.4px;
+  line-height: 1.3;
+  margin: 26px 0 16px;
+}
+
+.rt-content h3 {
+  font-size: 18.5px;
+  font-weight: 750;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+  line-height: 1.35;
+  margin: 20px 0 12px;
+}
+
+.rt-content h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f3efe6;
+  margin: 16px 0 10px;
+}
+
+.rt-content strong,
+.rt-content b {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Allow colored bold text to keep its chosen color */
+.rt-content span[style*="color"] strong,
+.rt-content span[style*="color"] b,
+.rt-content strong span[style*="color"],
+.rt-content b span[style*="color"] {
+  color: inherit;
+}
+
+.rt-content a {
+  color: #e05252;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: opacity 0.15s ease, filter 0.15s ease;
+}
+
+.rt-content a:hover {
+  filter: brightness(1.18);
+}
+
+/* Bullet & Numbered Lists (matching wiki screenshot) */
+.rt-content ul {
+  list-style: none;
+  padding-left: 20px;
+  margin: 10px 0 16px;
+}
+
+.rt-content ul > li {
+  position: relative;
+  margin: 7px 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: 1.74;
+}
+
+.rt-content ul > li::before {
+  content: '•';
+  position: absolute;
+  left: -16px;
+  top: 0;
+  color: #e05252;
+  font-weight: 900;
+}
+
+.rt-content ol {
+  padding-left: 22px;
+  margin: 10px 0 16px;
+}
+
+.rt-content ol > li {
+  margin: 7px 0;
+  padding-left: 4px;
+  color: inherit;
+  font-size: inherit;
+  line-height: 1.74;
+}
+
+/* Info Callout Box with ⓘ Circle Icon (exact match to reference screenshot) */
+.rt-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 18px 0;
+  padding: 16px 20px;
+  border-radius: 10px;
+  background: rgba(17, 23, 33, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
+}
+
+.rt-callout-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-style: normal;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  line-height: 1;
+  border: 1.6px solid #e05252;
+  color: #e05252;
+  user-select: none;
+}
+
+.rt-callout-gold {
+  border-color: rgba(236, 200, 139, 0.24);
+  background: rgba(26, 23, 18, 0.72);
+}
+
+.rt-callout-gold .rt-callout-icon {
+  border-color: #ecc88b;
+  color: #ecc88b;
+}
+
+.rt-callout-blue {
+  border-color: rgba(96, 165, 250, 0.24);
+  background: rgba(15, 25, 38, 0.78);
+}
+
+.rt-callout-blue .rt-callout-icon {
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+
+.rt-callout-green {
+  border-color: rgba(74, 222, 128, 0.24);
+  background: rgba(14, 28, 22, 0.76);
+}
+
+.rt-callout-green .rt-callout-icon {
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.rt-callout-body {
+  flex: 1;
+  min-width: 0;
+  color: #dce3ee;
+  font-size: 14.5px;
+  line-height: 1.72;
+}
+
+.rt-callout-body p {
+  margin: 0 0 8px;
+}
+
+.rt-callout-body p:last-child {
+  margin-bottom: 0;
+}
+
+.rt-content blockquote {
+  margin: 16px 0;
+  padding: 12px 18px;
+  border-left: 3px solid #ecc88b;
+  background: rgba(236, 200, 139, 0.06);
+  border-radius: 0 8px 8px 0;
+  color: #d5dfec;
+}
+
+.rt-content hr {
+  border: 0;
+  border-top: 1px solid rgba(181, 201, 229, 0.16);
+  margin: 24px 0;
+}
+
+.rt-content code {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: Consolas, Monaco, monospace;
+  font-size: 0.92em;
+  color: #f3d59b;
+}
+
+.rt-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid rgba(181, 201, 229, 0.18);
+  margin: 16px 0;
+}
+
+.rt-align-left { text-align: left !important; }
+.rt-align-center { text-align: center !important; }
+.rt-align-right { text-align: right !important; }

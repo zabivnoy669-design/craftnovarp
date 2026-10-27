@@ -399,15 +399,6 @@
   }
 }
 
-/* Selected article subtle focus highlight on article.html */
-.article-block.is-selected-article {
-  border-left: 2px solid #ecc88b;
-  padding-left: 18px !important;
-  background: linear-gradient(90deg, rgba(236, 200, 139, 0.055), transparent 70%);
-  border-radius: 4px 10px 10px 4px;
-}
-
-.article-summary-lead {
-  color: #dfca9f !important;
-  font-weight: 500;
+.article-toc {
+  display: none !important;
 }
