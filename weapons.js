@@ -1,6 +1,11 @@
 "use strict";
 (()=>{
  const $=id=>document.getElementById(id);let all=[];
+ const urlCat=new URLSearchParams(location.search).get('category');
+ if(urlCat&&$('category')){
+  const opt=[...$('category').options].find(o=>o.value===urlCat||o.textContent===urlCat);
+  if(opt)$('category').value=opt.value||opt.textContent;
+ }
  const node=(tag,text,cls)=>{const n=document.createElement(tag);n.textContent=text||'';if(cls)n.className=cls;return n;};
  function render(){
   const q=$('search').value.trim().toLocaleLowerCase('ru'),cat=$('category').value;
