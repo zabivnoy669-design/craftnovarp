@@ -317,24 +317,11 @@
           active: false
         });
       } else {
-        TEMPLATE_SUBITEMS.forEach((sub, sIdx) => {
-          const isSubActive = isCurrentSection && (
-            route.hash === sub.hash ||
-            (!route.hash && sIdx === 0)
-          );
-          children.push({
-            href: `article.html?section=${encodeURIComponent(sec.slug)}#${sub.hash}`,
-            label: sub.title,
-            svgName: 'puzzle',
-            active: isSubActive,
-            datasetSection: sec.slug,
-            datasetHash: sub.hash,
-            onClick: () => {
-              if (route.file === 'article.html' && currentRouteInfo().section === sec.slug) {
-                setTimeout(() => setActiveHashInSidebar(sec.slug, sub.hash), 20);
-              }
-            }
-          });
+        children.push({
+          href: `article.html?section=${encodeURIComponent(sec.slug)}`,
+          label: 'Открыть раздел',
+          svgName: 'puzzle',
+          active: isCurrentSection
         });
       }
 
