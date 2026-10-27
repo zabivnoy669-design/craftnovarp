@@ -14,7 +14,16 @@
   }
  };
  const viewport=$('mapViewport'),world=$('mapWorld'),image=$('mapImage'),canvas=$('drawingCanvas'),ctx=canvas.getContext('2d');
+ const urlMap=new URLSearchParams(location.search).get('map');
+ if(urlMap&&MAPS[urlMap])$('mapSelect').value=urlMap;
  let currentMap=MAPS[$('mapSelect').value]||MAPS['fort-zancudo'];
+ if(currentMap!==MAPS['fort-zancudo']){
+  image.src=currentMap.image;image.alt=currentMap.alt;image.width=currentMap.width;image.height=currentMap.height;
+  canvas.width=currentMap.width;canvas.height=currentMap.height;
+  world.style.width=`${currentMap.width}px`;world.style.height=`${currentMap.height}px`;
+  image.style.width=`${currentMap.width}px`;image.style.height=`${currentMap.height}px`;
+  canvas.style.width=`${currentMap.width}px`;canvas.style.height=`${currentMap.height}px`;
+ }
  let strokes=[],mode='pan',color='#ff4c55',scale=1,tx=0,ty=0,active=null,gesture=null,previousSize=null;
  function sanitize(list){return Array.isArray(list)?list.filter(s=>s&&typeof s.size==='number'&&((Array.isArray(s.points)&&s.points.length)||(['arrow','circle'].includes(s.kind)&&s.start&&s.end))):[];}
  function loadStrokes(map){
