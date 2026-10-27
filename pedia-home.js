@@ -2,8 +2,6 @@
 (async () => {
   const grid = document.querySelector('.pedia-grid');
   const db = window.getNovaSupabase ? window.getNovaSupabase() : (window.supabase && window.NOVA_SUPABASE ? window.supabase.createClient(window.NOVA_SUPABASE.url, window.NOVA_SUPABASE.publishableKey) : null);
-  if (!db || !grid) return;
-
   const safe = (tag, text, cls) => {
     const n = document.createElement(tag);
     n.textContent = text || '';
@@ -11,10 +9,30 @@
     return n;
   };
 
+  if (!grid) return;
+
+  if (window.NovaTransportSeed && Array.isArray(window.NovaTransportSeed.articles)) {
+    const seedItems = window.NovaTransportSeed.articles.map(a => ({
+      title: a.title,
+      description: a.summary || 'Статья энциклопедии Nova RP Pedia',
+      url: `article.html?section=transport&article=${encodeURIComponent(a.id)}`,
+      keys: `${a.title} ${a.summary || ''} transport транспорт автосалон`
+    }));
+    window.__novaDynamicSearchItems = seedItems;
+    const transportTileState = grid.querySelector('a[href="article.html?section=transport"] .tile-state');
+    if (transportTileState) {
+      transportTileState.classList.add('live');
+      const cnt = window.NovaTransportSeed.articles.length;
+      transportTileState.replaceChildren(safe('span', `${cnt} статьи`), safe('span', '↗'));
+    }
+  }
+
+  if (!db) return;
+
   try {
     const [secRes, artRes] = await Promise.all([
       db.from('pedia_sections').select('*').eq('is_active', true).order('sort_order'),
-      db.from('pedia_articles').select('id,section_slug,title,summary').eq('is_published', true).order('sort_order')
+      db.from('pedia_articles').select('id,section_slug,title,summary,body,sort_order').eq('is_published', true).order('sort_order')
     ]);
     if (secRes.error) throw secRes.error;
     const sections = secRes.data;
@@ -24,17 +42,24 @@
     const firstArtBySlug = new Map();
     const dynamicSearch = [];
 
-    if (!artRes.error && Array.isArray(artRes.data)) {
-      for (const a of artRes.data) {
-        countBySlug.set(a.section_slug, (countBySlug.get(a.section_slug) || 0) + 1);
-        if (!firstArtBySlug.has(a.section_slug)) firstArtBySlug.set(a.section_slug, a.id);
-        dynamicSearch.push({
-          title: a.title,
-          description: a.summary || 'Статья энциклопедии Nova RP Pedia',
-          url: `article.html?section=${encodeURIComponent(a.section_slug)}&article=${encodeURIComponent(a.id)}`,
-          keys: `${a.title} ${a.summary || ''} ${a.section_slug}`
-        });
-      }
+    let allArts = (!artRes.error && Array.isArray(artRes.data)) ? artRes.data : [];
+    if (window.NovaTransportSeed && typeof window.NovaTransportSeed.mergeTransportArticles === 'function') {
+      const nonTransport = allArts.filter(a => a.section_slug !== 'transport');
+      const mergedTransport = window.NovaTransportSeed.mergeTransportArticles(
+        allArts.filter(a => a.section_slug === 'transport')
+      );
+      allArts = nonTransport.concat(mergedTransport);
+    }
+
+    for (const a of allArts) {
+      countBySlug.set(a.section_slug, (countBySlug.get(a.section_slug) || 0) + 1);
+      if (!firstArtBySlug.has(a.section_slug)) firstArtBySlug.set(a.section_slug, a.id);
+      dynamicSearch.push({
+        title: a.title,
+        description: a.summary || 'Статья энциклопедии Nova RP Pedia',
+        url: `article.html?section=${encodeURIComponent(a.section_slug)}&article=${encodeURIComponent(a.id)}`,
+        keys: `${a.title} ${a.summary || ''} ${a.section_slug}`
+      });
     }
     for (const s of sections) {
       dynamicSearch.push({
