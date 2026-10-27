@@ -1,15 +1,18 @@
 'use strict';
 (async () => {
   const grid = document.querySelector('.pedia-grid');
-  const db = window.getNovaSupabase ? window.getNovaSupabase() : (window.supabase && window.NOVA_SUPABASE ? window.supabase.createClient(window.NOVA_SUPABASE.url, window.NOVA_SUPABASE.publishableKey) : null);
+  const db = window.getNovaSupabase
+    ? window.getNovaSupabase()
+    : (window.supabase && window.NOVA_SUPABASE
+      ? window.supabase.createClient(window.NOVA_SUPABASE.url, window.NOVA_SUPABASE.publishableKey)
+      : null);
+
   const safe = (tag, text, cls) => {
     const n = document.createElement(tag);
     n.textContent = text || '';
     if (cls) n.className = cls;
     return n;
   };
-
-  if (!grid) return;
 
   if (window.NovaTransportSeed && Array.isArray(window.NovaTransportSeed.articles)) {
     const seedItems = window.NovaTransportSeed.articles.map(a => ({
@@ -19,11 +22,13 @@
       keys: `${a.title} ${a.summary || ''} transport транспорт автосалон`
     }));
     window.__novaDynamicSearchItems = seedItems;
-    const transportTileState = grid.querySelector('a[href="article.html?section=transport"] .tile-state');
-    if (transportTileState) {
-      transportTileState.classList.add('live');
-      const cnt = window.NovaTransportSeed.articles.length;
-      transportTileState.replaceChildren(safe('span', `${cnt} статьи`), safe('span', '↗'));
+    if (grid) {
+      const transportTileState = grid.querySelector('a[href="article.html?section=transport"] .tile-state');
+      if (transportTileState) {
+        transportTileState.classList.add('live');
+        const cnt = window.NovaTransportSeed.articles.length;
+        transportTileState.replaceChildren(safe('span', `${cnt} статьи`), safe('span', '↗'));
+      }
     }
   }
 
@@ -71,37 +76,39 @@
     }
     window.__novaDynamicSearchItems = dynamicSearch;
 
-    grid.replaceChildren();
-    for (const s of sections) {
-      const a = document.createElement('a');
-      a.className = 'pedia-tile';
-      const firstArt = firstArtBySlug.get(s.slug);
-      a.href = s.href || (firstArt
-        ? `article.html?section=${encodeURIComponent(s.slug)}&article=${encodeURIComponent(firstArt)}`
-        : `article.html?section=${encodeURIComponent(s.slug)}`);
+    if (grid) {
+      grid.replaceChildren();
+      for (const s of sections) {
+        const a = document.createElement('a');
+        a.className = 'pedia-tile';
+        const firstArt = firstArtBySlug.get(s.slug);
+        a.href = s.href || (firstArt
+          ? `article.html?section=${encodeURIComponent(s.slug)}&article=${encodeURIComponent(firstArt)}`
+          : `article.html?section=${encodeURIComponent(s.slug)}`);
 
-      a.append(safe('div', s.icon || '◇', 'tile-icon'), safe('h3', s.title), safe('p', s.description));
+        a.append(safe('div', s.icon || '◇', 'tile-icon'), safe('h3', s.title), safe('p', s.description));
 
-      const cnt = countBySlug.get(s.slug) || 0;
-      const isLive = Boolean(s.is_tool || cnt > 0);
-      const state = safe('div', '', `tile-state${isLive ? ' live' : ''}`);
-      let stateText = s.slug === 'weapons'
-        ? 'Каталог оружия'
-        : (s.is_tool ? 'Рабочие инструменты' : 'Раздел готовится');
-      if (!s.is_tool && cnt > 0) {
-        const mod10 = cnt % 10, mod100 = cnt % 100;
-        const word = (mod10 === 1 && mod100 !== 11)
-          ? 'статья'
-          : (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20) ? 'статьи' : 'статей');
-        stateText = `${cnt} ${word}`;
+        const cnt = countBySlug.get(s.slug) || 0;
+        const isLive = Boolean(s.is_tool || cnt > 0);
+        const state = safe('div', '', `tile-state${isLive ? ' live' : ''}`);
+        let stateText = s.slug === 'weapons'
+          ? 'Каталог оружия'
+          : (s.is_tool ? 'Рабочие инструменты' : 'Раздел готовится');
+        if (!s.is_tool && cnt > 0) {
+          const mod10 = cnt % 10, mod100 = cnt % 100;
+          const word = (mod10 === 1 && mod100 !== 11)
+            ? 'статья'
+            : (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20) ? 'статьи' : 'статей');
+          stateText = `${cnt} ${word}`;
+        }
+        state.append(safe('span', stateText), safe('span', '↗'));
+        a.append(state);
+        grid.append(a);
       }
-      state.append(safe('span', stateText), safe('span', '↗'));
-      a.append(state);
-      grid.append(a);
-    }
 
-    const count = document.querySelector('#sections .section-bar span');
-    if (count) count.textContent = `${sections.length} разделов · редактируется модератором`;
+      const count = document.querySelector('#sections .section-bar span');
+      if (count) count.textContent = `${sections.length} разделов · редактируется модератором`;
+    }
 
     const session = await db.auth.getSession();
     if (session.data?.session) {
@@ -112,12 +119,13 @@
           const a = document.createElement('a');
           a.href = 'pedia-editor.html';
           a.className = 'ready-link';
-          a.style.marginTop = '14px';
+          a.style.marginTop = '18px';
           a.append(safe('div', '✎', 'tile-icon'));
           const d = document.createElement('div');
           d.append(safe('strong', 'Редактировать энциклопедию'), safe('small', 'Управление разделами и вложенными статьями бокового меню'));
           a.append(d, safe('b', '→'));
-          tools.insertBefore(a, document.querySelector('#sections'));
+          const anchor = document.querySelector('#sections') || tools.querySelector('.editor-note') || tools.querySelector('.pedia-footer');
+          tools.insertBefore(a, anchor || null);
         }
       }
     }
