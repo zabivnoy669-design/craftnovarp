@@ -13,7 +13,8 @@
   const ALLOWED_CLASSES = new Set([
     'rt-callout', 'rt-callout-red', 'rt-callout-gold', 'rt-callout-blue', 'rt-callout-green',
     'rt-callout-icon', 'rt-callout-body',
-    'rt-align-left', 'rt-align-center', 'rt-align-right'
+    'rt-align-left', 'rt-align-center', 'rt-align-right',
+    'rt-car-photo'
   ]);
 
   const COLOR_RE = /^(#[0-9a-fA-F]{3,8}|rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)|rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0|1|0?\.\d+)\s*\))$/;
@@ -68,6 +69,7 @@
     const val = String(raw || '').trim();
     if (!val || val.startsWith('//')) return null;
     if (/^assets\/[a-zA-Z0-9._/-]+(\?[a-zA-Z0-9._=&-]+)?$/.test(val)) return val;
+    if (/^data:image\/(webp|png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(val) && val.length <= 46000) return val;
     try {
       const u = new URL(val);
       if (u.protocol === 'https:' || u.protocol === 'http:') return u.href;
@@ -235,6 +237,9 @@
       const alt = (node.getAttribute('alt') || '').trim().slice(0, 160);
       if (alt) out.setAttribute('alt', alt);
       out.setAttribute('loading', 'lazy');
+      if (!options || !options.forSerialize) {
+        out.addEventListener('error', () => { out.style.display = 'none'; });
+      }
       return out;
     } else if (tag === 'br' || tag === 'hr') {
       return out;
@@ -288,7 +293,7 @@
     const parsed = parser.parseFromString(`<body>${rawHtml}</body>`, 'text/html');
     const temp = document.createElement('div');
     for (const ch of Array.from(parsed.body.childNodes)) {
-      const clean = sanitizeNode(ch, document, { forEditor: false });
+      const clean = sanitizeNode(ch, document, { forEditor: false, forSerialize: true });
       if (clean) temp.appendChild(clean);
     }
     const textCheck = (temp.textContent || '').trim();
