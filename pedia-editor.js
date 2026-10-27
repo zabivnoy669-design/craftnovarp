@@ -335,13 +335,12 @@
 
   $('rtImageCancel').addEventListener('click', () => imageBar.classList.add('hidden'));
 
-  $('rtImageApply').addEventListener('click', () => {
-    const src = $('rtImageUrl').value.trim();
-    const alt = $('rtImageAlt').value.trim();
+  function insertImageNode(src, alt) {
     if (!src) return;
     restoreSelection();
     const img = document.createElement('img');
     img.src = src;
+    img.className = 'rt-car-photo';
     if (alt) img.alt = alt;
     img.loading = 'lazy';
 
@@ -352,11 +351,87 @@
       range.insertNode(img);
       range.setStartAfter(img);
       range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
     } else {
       rtEditor.appendChild(img);
     }
     imageBar.classList.add('hidden');
     saveSelection();
+  }
+
+  function compressImageFileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Не удалось прочитать файл'));
+      reader.onload = () => {
+        const image = new Image();
+        image.onerror = () => reject(new Error('Повреждённый формат изображения'));
+        image.onload = () => {
+          const maxW = 640;
+          const maxH = 380;
+          const ratio = Math.min(1, maxW / image.width, maxH / image.height);
+          const w = Math.max(1, Math.round(image.width * ratio));
+          const h = Math.max(1, Math.round(image.height * ratio));
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(image, 0, 0, w, h);
+          let out = canvas.toDataURL('image/webp', 0.84);
+          if (!out.startsWith('data:image/webp') || out.length > 44000) {
+            out = canvas.toDataURL('image/jpeg', 0.78);
+          }
+          resolve(out);
+        };
+        image.src = String(reader.result || '');
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  $('rtImageApply').addEventListener('click', () => {
+    const src = $('rtImageUrl').value.trim();
+    const alt = $('rtImageAlt').value.trim();
+    insertImageNode(src, alt);
+  });
+
+  if ($('rtImageUploadBtn') && $('rtImageFile')) {
+    $('rtImageUploadBtn').addEventListener('click', () => $('rtImageFile').click());
+    $('rtImageFile').addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      e.target.value = '';
+      if (!file) return;
+      try {
+        const dataUrl = await compressImageFileToDataUrl(file);
+        const alt = $('rtImageAlt').value.trim() || file.name.replace(/\.[^.]+$/, '');
+        insertImageNode(dataUrl, alt);
+        say('Картинка сжата и вставлена в статью.');
+      } catch (err) {
+        say(err.message || 'Ошибка при обработке картинки.', true);
+      }
+    });
+  }
+
+  rtEditor.addEventListener('paste', async (e) => {
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    for (const item of Array.from(items)) {
+      if (item.type && item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (!file) continue;
+        e.preventDefault();
+        saveSelection();
+        try {
+          const dataUrl = await compressImageFileToDataUrl(file);
+          insertImageNode(dataUrl, 'Фото');
+          say('Скриншот из буфера сжат и вставлен.');
+        } catch (err) {
+          say(err.message || 'Не удалось вставить картинку из буфера.', true);
+        }
+        return;
+      }
+    }
   });
 
   /* ---------- Source Mode Toggle ---------- */

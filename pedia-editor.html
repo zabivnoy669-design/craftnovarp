@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Редактор Pedia — Nova RP</title>
 <link rel="stylesheet" href="profile-nav.css">
-<link rel="stylesheet" href="pedia-richtext.css?v=3">
+<link rel="stylesheet" href="pedia-richtext.css?v=4">
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -243,9 +243,11 @@ h2{font-size:18px;margin:0}
 
               <!-- Image Insertion Bar -->
               <div class="rt-popover hidden" id="rtImageBar">
-                <input type="url" id="rtImageUrl" placeholder="Прямая ссылка на картинку (https://...)">
+                <input type="url" id="rtImageUrl" placeholder="Ссылка (https://... или assets/cars/...)">
                 <input type="text" id="rtImageAlt" placeholder="Описание картинки (необязательно)">
-                <button type="button" class="btn primary" id="rtImageApply" style="padding:7px 13px">Вставить картинку</button>
+                <input type="file" id="rtImageFile" accept="image/*" hidden>
+                <button type="button" class="btn" id="rtImageUploadBtn" style="padding:7px 12px" title="Загрузить фото с компьютера (автоматически сожмётся в WebP)">📁 С ПК</button>
+                <button type="button" class="btn primary" id="rtImageApply" style="padding:7px 13px">Вставить</button>
                 <button type="button" class="btn" id="rtImageCancel" style="padding:7px 11px">Закрыть</button>
               </div>
 
@@ -275,8 +277,8 @@ h2{font-size:18px;margin:0}
 
 <script src="vendor/supabase.js"></script>
 <script src="supabase-config.js?v=3"></script>
-<script src="pedia-richtext.js?v=3"></script>
-<script src="pedia-editor.js?v=3"></script>
+<script src="pedia-richtext.js?v=4"></script>
+<script src="pedia-editor.js?v=4"></script>
 <script src="achievements.js"></script>
 </body>
 </html>
