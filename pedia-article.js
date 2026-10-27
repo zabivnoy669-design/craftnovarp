@@ -5,8 +5,6 @@
     : (window.supabase && window.NOVA_SUPABASE
       ? window.supabase.createClient(window.NOVA_SUPABASE.url, window.NOVA_SUPABASE.publishableKey)
       : null);
-  if (!db) return;
-
   const params = new URLSearchParams(location.search);
   const slug = params.get('section') || 'start';
   let activeArticleId = params.get('article') || '';
@@ -19,11 +17,28 @@
   };
 
   try {
-    const [{ data: sec }, { data: articles }, session] = await Promise.all([
-      db.from('pedia_sections').select('*').eq('slug', slug).maybeSingle(),
-      db.from('pedia_articles').select('*').eq('section_slug', slug).eq('is_published', true).order('sort_order').order('updated_at', { ascending: false }),
-      db.auth.getSession()
-    ]);
+    let sec = null;
+    let rawArticles = [];
+    let session = null;
+
+    if (db) {
+      try {
+        const [secRes, artRes, sessRes] = await Promise.all([
+          db.from('pedia_sections').select('*').eq('slug', slug).maybeSingle(),
+          db.from('pedia_articles').select('*').eq('section_slug', slug).eq('is_published', true).order('sort_order').order('updated_at', { ascending: false }),
+          db.auth.getSession()
+        ]);
+        sec = secRes?.data || null;
+        rawArticles = Array.isArray(artRes?.data) ? artRes.data : [];
+        session = sessRes || null;
+      } catch (dbErr) {
+        console.warn('Supabase query fallback in article view:', dbErr);
+      }
+    }
+
+    const articles = (slug === 'transport' && window.NovaTransportSeed && typeof window.NovaTransportSeed.mergeTransportArticles === 'function')
+      ? window.NovaTransportSeed.mergeTransportArticles(rawArticles)
+      : rawArticles;
 
     const titleEl = document.getElementById('articleTitle');
     const noticeEl = document.getElementById('articleNotice');
@@ -72,8 +87,20 @@
 
     const articleEl = document.querySelector('.article-main') || document.querySelector('.article-layout article');
 
+    function findArticle(id) {
+      const strId = String(id || '');
+      let hit = articles.find(a => String(a.id) === strId);
+      if (!hit && strId.startsWith('seed-') && window.NovaTransportSeed) {
+        const seedEntry = window.NovaTransportSeed.articles.find(s => s.id === strId);
+        if (seedEntry) {
+          hit = articles.find(a => String(a.title || '').trim().toLowerCase() === seedEntry.title.trim().toLowerCase());
+        }
+      }
+      return hit || articles[0];
+    }
+
     function renderSingleArticle(id, pushHistory, shouldScrollTop) {
-      const target = articles.find(a => String(a.id) === String(id)) || articles[0];
+      const target = findArticle(id);
       if (!target) return;
       activeArticleId = String(target.id);
 

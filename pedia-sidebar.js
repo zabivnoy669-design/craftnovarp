@@ -37,10 +37,18 @@
     enterArrow: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6v5a3 3 0 0 0 3 3h10"/><path d="m14 10 4 4-4 4"/></svg>'
   };
 
+  function buildInitialArticlesMap() {
+    const map = new Map();
+    if (window.NovaTransportSeed && typeof window.NovaTransportSeed.mergeTransportArticles === 'function') {
+      map.set('transport', window.NovaTransportSeed.mergeTransportArticles([]));
+    }
+    return map;
+  }
+
   let cachedData = {
     loaded: false,
     sections: DEFAULT_SECTIONS,
-    articlesBySlug: new Map(),
+    articlesBySlug: buildInitialArticlesMap(),
     isModerator: false
   };
 
@@ -512,7 +520,12 @@
             if (!bySlug.has(a.section_slug)) bySlug.set(a.section_slug, []);
             bySlug.get(a.section_slug).push(a);
           }
+          if (window.NovaTransportSeed && typeof window.NovaTransportSeed.mergeTransportArticles === 'function') {
+            bySlug.set('transport', window.NovaTransportSeed.mergeTransportArticles(bySlug.get('transport') || []));
+          }
           cachedData.articlesBySlug = bySlug;
+        } else if (window.NovaTransportSeed && typeof window.NovaTransportSeed.mergeTransportArticles === 'function') {
+          cachedData.articlesBySlug.set('transport', window.NovaTransportSeed.mergeTransportArticles([]));
         }
 
         if (sessRes?.data?.session) {
