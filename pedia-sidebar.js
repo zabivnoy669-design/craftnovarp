@@ -270,6 +270,13 @@
       active: route.file === 'forum.html'
     }));
 
+    navRoot.appendChild(buildFlatLink({
+      href: 'macros.html',
+      label: 'Макросы игроков',
+      svgName: 'macro',
+      active: route.file === 'macros.html'
+    }));
+
     // 2. Encyclopedia Collapsible Sections (from Supabase pedia_sections + pedia_articles)
     const divWiki = document.createElement('div');
     divWiki.className = 'side-section-divider';
@@ -435,40 +442,6 @@
           svgName: 'map',
           active: route.file === 'maps.html' && currentMapId === 'federal-prison'
         }
-      ]
-    }));
-
-    const currentMacroCat = new URLSearchParams(location.search).get('cat') || '';
-    const macrosOpen = route.file === 'macros.html' || (savedOpen && Object.hasOwn(savedOpen, 'tools:macros')
-      ? Boolean(savedOpen['tools:macros'])
-      : false);
-    const macroSubcats = [
-      { key: 'government', label: 'Государственное' },
-      { key: 'crime', label: 'Криминальное' },
-      { key: 'family', label: 'Семьи' },
-      { key: 'rp', label: 'RP' },
-      { key: 'other', label: 'Прочее' }
-    ];
-
-    navRoot.appendChild(buildTreeGroup({
-      id: 'tools:macros',
-      title: 'Макросы игроков',
-      svgOrCustom: { isCustom: false, value: 'macro' },
-      countBadge: macroSubcats.length,
-      isOpen: macrosOpen,
-      children: [
-        {
-          href: 'macros.html',
-          label: 'Все макросы',
-          svgName: 'macro',
-          active: route.file === 'macros.html' && !currentMacroCat
-        },
-        ...macroSubcats.map(mc => ({
-          href: `macros.html?cat=${encodeURIComponent(mc.key)}`,
-          label: mc.label,
-          svgName: 'macro',
-          active: route.file === 'macros.html' && currentMacroCat === mc.key
-        }))
       ]
     }));
 
