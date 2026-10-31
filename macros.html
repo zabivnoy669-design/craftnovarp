@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Макросы игроков — Nova RP Pedia</title>
+<link rel="stylesheet" href="profile-nav.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+  --nova-gold: #ecc88b;
+  --nova-gold-strong: #d8a756;
+  --nova-edge: rgba(181, 201, 229, 0.14);
+  --nova-panel: rgba(17, 25, 38, 0.86);
+  --nova-panel-deep: rgba(11, 16, 25, 0.94);
+}
+html { background: #090d13; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #090d13;
+  color: #e9edf4;
+  font: 14px 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+  isolation: isolate;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+a:hover { color: #ecc88b; }
+[hidden] { display: none !important; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid #ecc88b;
+  outline-offset: 2px;
+}
+
+/* NOVA — Animated Atmosphere */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 0%, #18212d 0%, #0c111a 44%, #090d13 85%);
+}
+.aura {
+  position: absolute;
+  width: 70vw;
+  height: 70vw;
+  max-width: 1100px;
+  max-height: 1100px;
+  border-radius: 50%;
+  filter: blur(75px);
+  opacity: 0.35;
+  will-change: transform;
+  animation: auraFloat 27s ease-in-out infinite alternate;
+}
+.aura.gold { left: -32vw; top: -38vw; background: radial-gradient(circle, #9a713e 0%, #6e54272e 48%, transparent 68%); }
+.aura.teal { right: -32vw; top: 8vh; background: radial-gradient(circle, #205d65 0%, #1b586b33 46%, transparent 68%); animation-duration: 34s; animation-delay: -13s; }
+.aura.violet { left: 24vw; bottom: -60vw; background: radial-gradient(circle, #424a79 0%, transparent 65%); animation-duration: 39s; animation-delay: -20s; }
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(#c2d3ed05 1px, transparent 1px), linear-gradient(90deg, #c2d3ed05 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(transparent, #0008 40%, transparent);
+  transform: perspective(900px) rotateX(20deg) scale(1.15);
+}
+.bg-beam {
+  position: absolute;
+  left: 22%;
+  top: -25%;
+  width: 20%;
+  height: 150%;
+  background: linear-gradient(90deg, transparent, #e4bb7010, transparent);
+  transform: rotate(30deg);
+  filter: blur(25px);
+  animation: beamDrift 30s ease-in-out infinite alternate;
+}
+@keyframes auraFloat {
+  0% { transform: translate3d(0,0,0) scale(1); }
+  50% { transform: translate3d(7vw,6vh,0) scale(1.12); }
+  100% { transform: translate3d(14vw,-3vh,0) scale(0.94); }
+}
+@keyframes beamDrift {
+  from { translate: -12vw 0; opacity: 0.3; }
+  to { translate: 25vw 0; opacity: 0.8; }
+}
+
+/* Site Header */
+header {
+  position: relative;
+  z-index: 5;
+  height: 84px;
+  padding: 0 3.2vw;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  background: rgba(13, 18, 26, 0.68);
+  border-bottom: 1px solid rgba(175, 195, 229, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.brand {
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: -1.2px;
+  color: #fff;
+}
+.brand:hover { color: #fff; }
+.brand b { color: #ecc88b; text-shadow: 0 0 26px #edc58030; }
+.brand small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 3.3px;
+  color: #8692a5;
+  margin-top: 5px;
+}
+.header-back {
+  color: #9fb0c7;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.header-back:hover { color: #ecc88b; }
+header .right {
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  border: 1px solid rgba(224, 201, 156, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+  color: #b9c5d7;
+}
+
+/* Main Page Container */
+.mc-page {
+  max-width: 1580px;
+  margin: 0 auto;
+  padding: 24px 3.2vw 40px;
+}
+
+.crumb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: #8b98ab;
+  margin-bottom: 16px;
+}
+.crumb-trail a { color: #aebcd0; }
+.crumb-trail a:hover { color: #ecc88b; text-decoration: underline; }
+.crumb-trail span { color: #e1c28c; }
+.crumb-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: #8fa0b7;
+  font-size: 12px;
+}
+.crumb-stats b { color: #ecc88b; }
+
+/* ==========================================================================
+   TOP BAR (Matches screenshot: Search + Sort + "+ Предложить макрос" + 6 Category Pills)
+   ========================================================================== */
+.mc-topbar {
+  background: linear-gradient(180deg, rgba(20, 29, 43, 0.9), rgba(13, 19, 29, 0.94));
+  border: 1px solid var(--nova-edge);
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  margin-bottom: 18px;
+}
+
+.mc-controls-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.mc-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.mc-search-ico {
+  position: absolute;
+  left: 15px;
+  color: #7f91a9;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+}
+.mc-search-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px 0 42px;
+  border-radius: 11px;
+  border: 1px solid rgba(178, 200, 229, 0.16);
+  background: rgba(10, 15, 23, 0.85);
+  color: #f1f5fb;
+  font-size: 14px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.mc-search-input::placeholder { color: #6f8098; }
+.mc-search-input:focus {
+  border-color: rgba(236, 200, 139, 0.58);
+  box-shadow: 0 0 0 3px rgba(236, 200, 139, 0.1);
+  outline: none;
+}
+
+.mc-sort-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.mc-sort-ico {
+  position: absolute;
+  left: 13px;
+  color: #ecc88b;
+  pointer-events: none;
+  font-size: 13px;
+}
+.mc-sort-select {
+  height: 44px;
+  padding: 0 34px 0 34px;
+  border-radius: 11px;
+  border: 1px solid rgba(178, 200, 229, 0.18);
+  background: rgba(15, 22, 33, 0.92);
+  color: #e4ebf5;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #96a6bc 50%), linear-gradient(135deg, #96a6bc 50%, transparent 50%);
+  background-position: calc(100% - 17px) 19px, calc(100% - 12px) 19px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  transition: border-color 0.18s ease;
+}
+.mc-sort-select:hover { border-color: rgba(236, 200, 139, 0.42); }
+
+.mc-submit-btn {
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 11px;
+  border: 1px solid rgba(250, 223, 169, 0.55);
+  background: linear-gradient(115deg, #f0d39d 0%, #cf9f55 100%);
+  color: #1c150b;
+  font-size: 13.5px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  box-shadow: 0 8px 26px rgba(207, 159, 85, 0.25);
+  transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
+}
+.mc-submit-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 12px 32px rgba(207, 159, 85, 0.36);
+}
+
+/* Category Filter Pills */
+.mc-cats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.mc-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 35px;
+  padding: 0 13px;
+  border-radius: 9px;
+  border: 1px solid rgba(178, 200, 229, 0.14);
+  background: rgba(14, 20, 30, 0.8);
+  color: #a8b7cc;
+  font-size: 12.5px;
+  font-weight: 650;
+  transition: all 0.16s ease;
+}
+.mc-cat-pill:hover {
+  border-color: rgba(236, 200, 139, 0.35);
+  color: #f3f6fb;
+  background: rgba(24, 34, 49, 0.9);
+}
+.mc-cat-pill .cat-dot {
+  display: inline-grid;
+  place-items: center;
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* Category Accent Colors (matching screenshot semantics + site palette) */
+.mc-cat-pill[data-cat="government"] { color: #7db4ff; border-color: rgba(96, 165, 250, 0.2); background: rgba(30, 58, 95, 0.22); }
+.mc-cat-pill[data-cat="crime"]      { color: #f88379; border-color: rgba(248, 113, 113, 0.22); background: rgba(95, 28, 34, 0.22); }
+.mc-cat-pill[data-cat="family"]     { color: #f3c26b; border-color: rgba(245, 180, 73, 0.24); background: rgba(92, 62, 18, 0.24); }
+.mc-cat-pill[data-cat="rp"]         { color: #5eead4; border-color: rgba(52, 211, 153, 0.22); background: rgba(16, 74, 62, 0.24); }
+.mc-cat-pill[data-cat="other"]      { color: #c4b5fd; border-color: rgba(167, 139, 250, 0.22); background: rgba(58, 39, 98, 0.24); }
+
+.mc-cat-pill.is-active {
+  border-color: #ecc88b !important;
+  box-shadow: 0 0 0 1px rgba(236, 200, 139, 0.32), 0 6px 18px rgba(0, 0, 0, 0.32);
+  background: linear-gradient(135deg, rgba(236, 200, 139, 0.22), rgba(29, 39, 55, 0.92)) !important;
+  color: #fff6e5 !important;
+}
+
+/* ==========================================================================
+   SPLIT WORKSPACE: LEFT LIST + RIGHT DETAIL
+   ========================================================================== */
+.mc-workspace {
+  display: grid;
+  grid-template-columns: 365px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+/* Left List Column */
+.mc-list-panel {
+  background: linear-gradient(180deg, rgba(18, 26, 39, 0.9), rgba(11, 16, 25, 0.95));
+  border: 1px solid var(--nova-edge);
+  border-radius: 16px;
+  padding: 10px;
+  max-height: calc(100vh - 235px);
+  min-height: 460px;
+  overflow-y: auto;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(236, 200, 139, 0.26) transparent;
+}
+.mc-list-panel::-webkit-scrollbar { width: 5px; }
+.mc-list-panel::-webkit-scrollbar-thumb { background: rgba(236, 200, 139, 0.24); border-radius: 99px; }
+
+.mc-item {
+  width: 100%;
+  display: block;
+  text-align: left;
+  padding: 14px 15px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  margin-bottom: 4px;
+  position: relative;
+  transition: background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.mc-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: -3px;
+  height: 1px;
+  background: rgba(181, 201, 229, 0.08);
+}
+.mc-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.mc-item.is-selected {
+  background: linear-gradient(135deg, rgba(236, 200, 139, 0.13), rgba(24, 35, 52, 0.92));
+  border-color: rgba(236, 200, 139, 0.38);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+}
+.mc-item.is-selected::after { display: none; }
+
+.mc-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.mc-item-title {
+  font-size: 14.5px;
+  font-weight: 750;
+  color: #f3f6fb;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mc-item.is-selected .mc-item-title { color: #fff6e4; }
+.mc-item-arrow {
+  color: #6f8098;
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: transform 0.16s ease, color 0.16s ease;
+}
+.mc-item.is-selected .mc-item-arrow,
+.mc-item:hover .mc-item-arrow {
+  color: #ecc88b;
+  transform: translateX(2px);
+}
+
+.mc-item-desc {
+  margin-top: 6px;
+  font-size: 12.2px;
+  color: #8d9eb5;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mc-item-foot {
+  margin-top: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* Category Mini Tag */
+.mc-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.mc-tag.government { background: rgba(59, 130, 246, 0.16); border: 1px solid rgba(96, 165, 250, 0.3); color: #7db4ff; }
+.mc-tag.crime      { background: rgba(239, 68, 68, 0.16); border: 1px solid rgba(248, 113, 113, 0.3); color: #fca5a5; }
+.mc-tag.family     { background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(251, 191, 36, 0.3); color: #fcd34d; }
+.mc-tag.rp         { background: rgba(16, 185, 129, 0.16); border: 1px solid rgba(52, 211, 153, 0.3); color: #6ee7b7; }
+.mc-tag.other      { background: rgba(139, 92, 246, 0.16); border: 1px solid rgba(167, 139, 250, 0.3); color: #c4b5fd; }
+
+.mc-item-metrics {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11.5px;
+  color: #7d8fa8;
+  white-space: nowrap;
+}
+.mc-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.mc-metric.dl { color: #b8c7dc; font-weight: 600; }
+
+/* ==========================================================================
+   RIGHT DETAIL CARD
+   ========================================================================== */
+.mc-detail-panel {
+  background: linear-gradient(165deg, rgba(20, 29, 43, 0.92), rgba(11, 16, 25, 0.97));
+  border: 1px solid var(--nova-edge);
+  border-radius: 16px;
+  padding: 28px 30px;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.42);
+  min-width: 0;
+}
+
+.mc-detail-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.mc-detail-title {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  color: #f8f5ee;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.mc-detail-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mc-manage-btn {
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(236, 200, 139, 0.25);
+  background: rgba(236, 200, 139, 0.08);
+  color: #ecc88b;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.mc-manage-btn:hover { background: rgba(236, 200, 139, 0.18); }
+.mc-manage-btn.danger {
+  border-color: rgba(248, 113, 113, 0.32);
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+}
+.mc-manage-btn.danger:hover { background: rgba(239, 68, 68, 0.22); }
+
+.mc-detail-desc {
+  margin: 14px 0 0;
+  font-size: 14.5px;
+  color: #c2cfdf;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.mc-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.mc-mini-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 7px;
+  background: rgba(236, 200, 139, 0.09);
+  border: 1px solid rgba(236, 200, 139, 0.22);
+  color: #ebd09d;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.mc-mini-tag {
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(181, 201, 229, 0.12);
+  color: #8fa1b9;
+  font-size: 11.5px;
+}
+
+/* UUID & Macro Code Blocks */
+.mc-code-box {
+  margin-top: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(181, 201, 229, 0.13);
+  background: rgba(8, 12, 19, 0.92);
+  overflow: hidden;
+}
+.mc-code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(181, 201, 229, 0.09);
+  background: rgba(16, 23, 35, 0.72);
+}
+.mc-code-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: #7d90aa;
+}
+.mc-inline-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 7px;
+  border: 1px solid rgba(181, 201, 229, 0.18);
+  background: rgba(26, 36, 52, 0.8);
+  color: #cbd6e6;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.16s ease;
+}
+.mc-inline-copy:hover {
+  border-color: rgba(236, 200, 139, 0.48);
+  color: #ecc88b;
+}
+
+.mc-uuid-value {
+  padding: 15px 16px;
+  font-family: 'Cascadia Mono', 'Consolas', 'SFMono-Regular', monospace;
+  font-size: 14px;
+  color: #5eead4;
+  letter-spacing: 0.3px;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.mc-script-value {
+  margin: 0;
+  padding: 16px;
+  font-family: 'Cascadia Mono', 'Consolas', 'SFMono-Regular', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #e9dfc9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+/* Primary Action Row (Download + Copy + Heart + Star + Flag) */
+.mc-action-bar {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto auto auto;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.mc-primary-dl {
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(250, 223, 169, 0.6);
+  background: linear-gradient(115deg, #f0d39d 0%, #cf9f55 100%);
+  color: #1c150b;
+  font-size: 14px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  box-shadow: 0 10px 28px rgba(207, 159, 85, 0.24);
+  transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.16s ease;
+}
+.mc-primary-dl:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 14px 34px rgba(207, 159, 85, 0.35);
+}
+
+.mc-secondary-copy {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(236, 200, 139, 0.34);
+  background: linear-gradient(135deg, rgba(236, 200, 139, 0.14), rgba(24, 34, 49, 0.92));
+  color: #f4dcb0;
+  font-size: 13.5px;
+  font-weight: 750;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.16s ease;
+}
+.mc-secondary-copy:hover {
+  border-color: rgba(236, 200, 139, 0.65);
+  background: linear-gradient(135deg, rgba(236, 200, 139, 0.24), rgba(30, 42, 60, 0.96));
+  color: #fff8eb;
+}
+
+.mc-icon-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid rgba(181, 201, 229, 0.16);
+  background: rgba(16, 24, 36, 0.9);
+  color: #a9b8cd;
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+  transition: all 0.16s ease;
+}
+.mc-icon-btn:hover {
+  border-color: rgba(236, 200, 139, 0.45);
+  color: #fff;
+  background: rgba(25, 36, 52, 0.95);
+}
+.mc-icon-btn.is-liked {
+  border-color: rgba(248, 113, 113, 0.55);
+  background: rgba(239, 68, 68, 0.16);
+  color: #f87171;
+}
+.mc-icon-btn.is-fav {
+  border-color: rgba(236, 200, 139, 0.65);
+  background: rgba(236, 200, 139, 0.18);
+  color: #ecc88b;
+}
+.mc-icon-btn.is-reported {
+  border-color: rgba(251, 146, 60, 0.5);
+  color: #fb923c;
+}
+
+/* Metadata 2-Column Info Grid (matches bottom card in screenshot) */
+.mc-meta-grid {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: 12px;
+  border: 1px solid rgba(181, 201, 229, 0.11);
+  background: rgba(12, 18, 28, 0.78);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 28px;
+}
+.mc-meta-cell small {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #6b7d96;
+  margin-bottom: 5px;
+}
+.mc-meta-cell strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #eef3fa;
+}
+.mc-meta-cell strong.gold-num {
+  color: #ecc88b;
+  font-size: 16px;
+  font-weight: 850;
+}
+@keyframes counterBump {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.22); color: #fff4d6; text-shadow: 0 0 18px rgba(236, 200, 139, 0.85); }
+  100% { transform: scale(1); }
+}
+.bump-anim {
+  animation: counterBump 0.45s ease;
+}
+
+.mc-empty-box {
+  padding: 44px 20px;
+  text-align: center;
+  color: #8b9bb2;
+  line-height: 1.7;
+}
+.mc-empty-box strong {
+  display: block;
+  color: #e9edf4;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+/* ==========================================================================
+   MODAL: "+ Предложить макрос" / Редактирование
+   ========================================================================== */
+.mc-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(5, 8, 14, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.mc-modal {
+  width: 100%;
+  max-width: 680px;
+  max-height: 92vh;
+  overflow-y: auto;
+  border-radius: 18px;
+  background: linear-gradient(170deg, #162131 0%, #0d1420 100%);
+  border: 1px solid rgba(236, 200, 139, 0.28);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.72);
+  padding: 26px 28px;
+}
+.mc-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.mc-modal-head h2 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.4px;
+  color: #f7f3ea;
+}
+.mc-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid rgba(181, 201, 229, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: #a8b7cc;
+  font-size: 18px;
+}
+.mc-close-btn:hover { color: #fff; border-color: rgba(236, 200, 139, 0.4); }
+
+.mc-author-banner {
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: rgba(236, 200, 139, 0.08);
+  border: 1px solid rgba(236, 200, 139, 0.2);
+  color: #d6c39f;
+  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.mc-author-banner a { color: #ecc88b; font-weight: 700; text-decoration: underline; }
+
+.mc-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.mc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.mc-field label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #b7c5d9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.mc-field label span {
+  font-weight: 500;
+  color: #7688a1;
+  font-size: 11px;
+}
+.mc-input, .mc-textarea, .mc-select {
+  width: 100%;
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px solid rgba(178, 200, 229, 0.18);
+  background: rgba(9, 14, 22, 0.9);
+  color: #f1f5fb;
+  font-size: 13.5px;
+}
+.mc-textarea {
+  resize: vertical;
+  min-height: 135px;
+  font-family: 'Cascadia Mono', 'Consolas', monospace;
+  line-height: 1.6;
+}
+.mc-input:focus, .mc-textarea:focus, .mc-select:focus {
+  border-color: rgba(236, 200, 139, 0.58);
+  outline: none;
+}
+
+.mc-code-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.mc-mini-btn {
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(236, 200, 139, 0.28);
+  background: rgba(236, 200, 139, 0.09);
+  color: #ecc88b;
+  font-size: 11.5px;
+  font-weight: 650;
+}
+.mc-mini-btn:hover { background: rgba(236, 200, 139, 0.18); }
+
+.mc-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+.mc-cancel-btn {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(181, 201, 229, 0.18);
+  background: transparent;
+  color: #a8b7cc;
+  font-weight: 650;
+}
+.mc-cancel-btn:hover { color: #fff; border-color: rgba(181, 201, 229, 0.35); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 12px 22px;
+  border-radius: 10px;
+  background: linear-gradient(115deg, #f0d39d, #cfa058);
+  color: #1c150b;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+}
+
+.pedia-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 36px;
+  padding: 22px 0 8px;
+  border-top: 1px solid rgba(181, 201, 229, 0.11);
+  font-size: 11px;
+  color: #71859f;
+}
+
+@media (max-width: 1040px) {
+  .mc-workspace {
+    grid-template-columns: 310px minmax(0, 1fr);
+  }
+  .mc-action-bar {
+    grid-template-columns: 1fr 1fr;
+  }
+  .mc-action-bar .mc-icon-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 820px) {
+  header { height: 72px; padding: 0 18px; gap: 16px; }
+  header .right { display: none; }
+  .mc-page { padding: 18px 14px 32px; }
+  .mc-controls-row {
+    grid-template-columns: 1fr;
+  }
+  .mc-sort-select, .mc-submit-btn { width: 100%; justify-content: center; }
+  .mc-workspace {
+    grid-template-columns: 1fr;
+  }
+  .mc-list-panel {
+    max-height: 340px;
+    min-height: 0;
+  }
+  .mc-detail-panel {
+    padding: 20px 18px;
+  }
+  .mc-form-grid, .mc-meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<div class="atmosphere" aria-hidden="true">
+  <div class="aura gold"></div>
+  <div class="aura teal"></div>
+  <div class="aura violet"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-beam"></div>
+</div>
+
+<header>
+  <a class="brand" href="home.html" aria-label="Nova RP Pedia — главная">NOVA <b>RP</b><small>PEDIA · ЭНЦИКЛОПЕДИЯ</small></a>
+  <a class="header-back" href="home.html">← На главную</a>
+  <div class="nova-header-end">
+    <div class="right">RU · GTA V</div>
+    <a class="nova-profile-btn" id="novaProfileNavBtn" href="profile.html">
+      <span class="npb-avatar" aria-hidden="true">◈</span>
+      <span class="npb-label">Профиль</span>
+      <span class="npb-badge">🔒 Вход</span>
+    </a>
+  </div>
+</header>
+
+<main class="mc-page">
+  <nav class="crumb" aria-label="Навигация">
+    <div class="crumb-trail">
+      <a href="home.html">Nova RP Pedia</a> &nbsp; / &nbsp; <span>Макросы игроков</span>
+    </div>
+    <div class="crumb-stats" id="globalMacroStats">
+      <span>Макросов: <b id="totalMacrosStat">0</b></span>
+      <span>Всего скачиваний: <b id="totalDownloadsStat">0</b></span>
+    </div>
+  </nav>
+
+  <!-- TOP SEARCH, SORT, SUBMIT & CATEGORY TABS -->
+  <section class="mc-topbar" aria-label="Фильтры и добавление макроса">
+    <div class="mc-controls-row">
+      <div class="mc-search-wrap">
+        <span class="mc-search-ico" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        <input class="mc-search-input" id="macroSearch" type="search" placeholder="Поиск по названию, описанию, тегам, автору..." aria-label="Поиск по макросам">
+      </div>
+
+      <div class="mc-sort-wrap">
+        <span class="mc-sort-ico" aria-hidden="true">⇅</span>
+        <select class="mc-sort-select" id="macroSort" aria-label="Сортировка макросов">
+          <option value="downloads">Больше скачиваний</option>
+          <option value="likes">Больше лайков</option>
+          <option value="newest">Сначала новые</option>
+          <option value="updated">Недавно обновлённые</option>
+          <option value="favorites">★ Избранное</option>
+          <option value="mine">◈ Мои макросы</option>
+        </select>
+      </div>
+
+      <button class="mc-submit-btn" id="openSubmitModalBtn" type="button">
+        <span aria-hidden="true">＋</span>
+        <span>Предложить макрос</span>
+      </button>
+    </div>
+
+    <div class="mc-cats" id="macroCategoryTabs" role="tablist" aria-label="Категории макросов">
+      <button class="mc-cat-pill is-active" type="button" data-cat="">
+        <span class="cat-dot" aria-hidden="true">⊞</span>
+        <span>Все</span>
+      </button>
+      <button class="mc-cat-pill" type="button" data-cat="government">
+        <span class="cat-dot" aria-hidden="true">🛡</span>
+        <span>Государственное</span>
+      </button>
+      <button class="mc-cat-pill" type="button" data-cat="crime">
+        <span class="cat-dot" aria-hidden="true">⚡</span>
+        <span>Криминальное</span>
+      </button>
+      <button class="mc-cat-pill" type="button" data-cat="family">
+        <span class="cat-dot" aria-hidden="true">👥</span>
+        <span>Семьи</span>
+      </button>
+      <button class="mc-cat-pill" type="button" data-cat="rp">
+        <span class="cat-dot" aria-hidden="true">&lt;/&gt;</span>
+        <span>RP</span>
+      </button>
+      <button class="mc-cat-pill" type="button" data-cat="other">
+        <span class="cat-dot" aria-hidden="true">•••</span>
+        <span>Прочее</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- SPLIT WORKSPACE: LIST ON LEFT, SELECTED MACRO ON RIGHT -->
+  <div class="mc-workspace">
+    <aside class="mc-list-panel" id="macroListPanel" aria-label="Список макросов"></aside>
+
+    <section class="mc-detail-panel" id="macroDetailPanel" aria-live="polite">
+      <div class="mc-empty-box">
+        <strong>Выберите макрос слева</strong>
+        Или нажмите «+ Предложить макрос», чтобы опубликовать свой собственный макрос для игроков штата.
+      </div>
+    </section>
+  </div>
+
+  <footer class="pedia-footer">
+    <a href="home.html">← Главная Nova RP Pedia</a>
+    <span>Каталог пользовательских макросов Nova RP · Живой счётчик скачиваний</span>
+    <span>Сделано с помощью ИИ, главный разработчик — <a href="https://space.ru" target="_blank" rel="noopener noreferrer">space.ru</a></span>
+  </footer>
+</main>
+
+<!-- PLAYER SUBMISSION / EDIT MODAL -->
+<div class="mc-modal-backdrop" id="macroModalBackdrop" hidden>
+  <div class="mc-modal" role="dialog" aria-modal="true" aria-labelledby="macroModalTitle">
+    <div class="mc-modal-head">
+      <h2 id="macroModalTitle">Предложить макрос</h2>
+      <button class="mc-close-btn" id="closeMacroModalBtn" type="button" aria-label="Закрыть">✕</button>
+    </div>
+
+    <div class="mc-author-banner" id="macroAuthorBanner"></div>
+
+    <form id="macroSubmitForm">
+      <input type="hidden" id="editMacroId" value="">
+
+      <div class="mc-form-grid">
+        <div class="mc-field">
+          <label for="macroTitleInput">Название макроса <span>от 2 до 100 симв.</span></label>
+          <input class="mc-input" id="macroTitleInput" type="text" required minlength="2" maxlength="100" placeholder="Например: Комплект макросов для госника">
+        </div>
+
+        <div class="mc-field">
+          <label for="macroCatInput">Категория</label>
+          <select class="mc-select" id="macroCatInput" required>
+            <option value="government">🛡 Государственное</option>
+            <option value="crime">⚡ Криминальное</option>
+            <option value="family">👥 Семьи</option>
+            <option value="rp">&lt;/&gt; RP</option>
+            <option value="other">••• Прочее</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mc-field">
+        <label for="macroDescInput">Краткое описание <span>до 300 симв.</span></label>
+        <input class="mc-input" id="macroDescInput" type="text" required minlength="2" maxlength="300" placeholder="Например: Готовый комплект макросов / реанимация на боковую кнопку мыши">
+      </div>
+
+      <div class="mc-form-grid">
+        <div class="mc-field">
+          <label for="macroAuthorInput">Имя автора <span>или Аноним</span></label>
+          <input class="mc-input" id="macroAuthorInput" type="text" minlength="2" maxlength="40" value="Аноним" placeholder="Аноним или ваш ник">
+        </div>
+
+        <div class="mc-field">
+          <label for="macroHotkeyInput">Клавиша / кнопка мыши <span>необязательно</span></label>
+          <input class="mc-input" id="macroHotkeyInput" type="text" maxlength="60" placeholder="Напр.: Mouse 5, Кнопка 4, F4">
+        </div>
+      </div>
+
+      <div class="mc-form-grid">
+        <div class="mc-field">
+          <label for="macroUuidInput">
+            UUID / код импорта макроса
+            <span>из программы макросов</span>
+          </label>
+          <input class="mc-input" id="macroUuidInput" type="text" maxlength="200" placeholder="Напр.: a99cb138-0ced-48bd-b7bf-40c83f477757">
+        </div>
+
+        <div class="mc-field">
+          <label for="macroTagsInput">Теги <span>через запятую</span></label>
+          <input class="mc-input" id="macroTagsInput" type="text" maxlength="200" placeholder="гос, крайм, рес, ems, чат">
+        </div>
+      </div>
+
+      <div class="mc-field">
+        <div class="mc-code-tools">
+          <label for="macroCodeInput" style="margin:0">Конфигурация / скрипт / файл макроса <span style="font-weight:500;color:#7688a1;font-size:11px;margin-left:6px">(или загрузите файл)</span></label>
+          <div>
+            <input type="file" id="macroFilePicker" accept=".amc,.xml,.json,.ahk,.cfg,.macro,.txt,.ini,.lua" hidden>
+            <button class="mc-mini-btn" id="loadMacroFileBtn" type="button">📂 Загрузить файл макроса (.json / .xml / .amc / .ahk / .cfg)</button>
+          </div>
+        </div>
+        <textarea class="mc-textarea" id="macroCodeInput" maxlength="250000" placeholder="Вставьте код или экспортированную конфигурацию макроса (либо оставьте пустым, если макрос импортируется только по UUID выше)..."></textarea>
+        <input type="hidden" id="macroFileNameInput" value="">
+      </div>
+
+      <div class="mc-modal-actions">
+        <button class="mc-cancel-btn" id="cancelMacroModalBtn" type="button">Отмена</button>
+        <button class="mc-submit-btn" id="saveMacroSubmitBtn" type="submit">Опубликовать макрос</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="macroToast" hidden></div>
+
+<script src="vendor/supabase.js"></script>
+<script src="supabase-config.js?v=3"></script>
+<script src="achievements.js"></script>
+<script src="macros.js?v=2"></script>
+</body>
+</html>
