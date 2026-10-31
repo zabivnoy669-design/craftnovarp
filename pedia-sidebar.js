@@ -33,6 +33,7 @@
     car: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>',
     cube: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-9 5-9-5V8l9-5 9 5z"/><path d="m3.3 7.3 8.7 4.9 8.7-4.9"/><path d="M12 22.2V12"/></svg>',
     edit: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+    macro: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
     chevron: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
     enterArrow: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6v5a3 3 0 0 0 3 3h10"/><path d="m14 10 4 4-4 4"/></svg>'
   };
@@ -437,14 +438,50 @@
       ]
     }));
 
+    const currentMacroCat = new URLSearchParams(location.search).get('cat') || '';
+    const macrosOpen = route.file === 'macros.html' || (savedOpen && Object.hasOwn(savedOpen, 'tools:macros')
+      ? Boolean(savedOpen['tools:macros'])
+      : false);
+    const macroSubcats = [
+      { key: 'government', label: 'Государственное' },
+      { key: 'crime', label: 'Криминальное' },
+      { key: 'family', label: 'Семьи' },
+      { key: 'rp', label: 'RP' },
+      { key: 'other', label: 'Прочее' }
+    ];
+
+    navRoot.appendChild(buildTreeGroup({
+      id: 'tools:macros',
+      title: 'Макросы игроков',
+      svgOrCustom: { isCustom: false, value: 'macro' },
+      countBadge: macroSubcats.length,
+      isOpen: macrosOpen,
+      children: [
+        {
+          href: 'macros.html',
+          label: 'Все макросы',
+          svgName: 'macro',
+          active: route.file === 'macros.html' && !currentMacroCat
+        },
+        ...macroSubcats.map(mc => ({
+          href: `macros.html?cat=${encodeURIComponent(mc.key)}`,
+          label: mc.label,
+          svgName: 'macro',
+          active: route.file === 'macros.html' && currentMacroCat === mc.key
+        }))
+      ]
+    }));
+
     const customTools = cachedData.sections.filter(s =>
       s.is_active !== false &&
       s.is_tool &&
       s.slug !== 'crafts' &&
       s.slug !== 'weapons' &&
+      s.slug !== 'macros' &&
       s.href !== 'catalogs.html' &&
       s.href !== 'weapons.html' &&
-      s.href !== 'maps.html'
+      s.href !== 'maps.html' &&
+      s.href !== 'macros.html'
     );
     for (const t of customTools) {
       navRoot.appendChild(buildFlatLink({
