@@ -607,6 +607,546 @@ header .right {
   overflow-y: auto;
 }
 
+.mc-grm-raw {
+  padding: 13px 16px;
+  font-family: 'Cascadia Mono', 'Consolas', 'SFMono-Regular', monospace;
+  font-size: 12.5px;
+  color: #5eead4;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  user-select: all;
+}
+
+/* ==========================================================================
+   GRM1 DECODED VISUALIZER (Profile / Macro Steps)
+   ========================================================================== */
+.grm-decoded-box {
+  margin-top: 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(236, 200, 139, 0.24);
+  background: linear-gradient(180deg, rgba(16, 24, 36, 0.92), rgba(10, 15, 24, 0.96));
+  overflow: hidden;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+}
+
+.grm-decoded-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(236, 200, 139, 0.14);
+  background: linear-gradient(90deg, rgba(236, 200, 139, 0.11), rgba(18, 27, 40, 0.65));
+}
+
+.grm-decoded-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #f3d7a2;
+}
+
+.grm-decoded-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.8);
+}
+
+.grm-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(181, 201, 229, 0.08);
+  background: rgba(9, 14, 22, 0.55);
+}
+
+.grm-sub-tab {
+  padding: 5px 11px;
+  border-radius: 8px;
+  border: 1px solid rgba(181, 201, 229, 0.15);
+  background: rgba(18, 26, 39, 0.85);
+  color: #a7b6cb;
+  font-size: 12px;
+  font-weight: 650;
+  transition: all 0.15s ease;
+}
+.grm-sub-tab:hover {
+  border-color: rgba(236, 200, 139, 0.4);
+  color: #fff;
+}
+.grm-sub-tab.is-active {
+  background: linear-gradient(120deg, rgba(236, 200, 139, 0.24), rgba(32, 44, 62, 0.95));
+  border-color: #ecc88b;
+  color: #fff7e6;
+}
+
+.grm-cards-list {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 520px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(236, 200, 139, 0.25) transparent;
+}
+
+.grm-subcard {
+  border-radius: 11px;
+  border: 1px solid rgba(181, 201, 229, 0.13);
+  background: rgba(13, 19, 29, 0.9);
+  padding: 13px 15px;
+}
+
+.grm-subcard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.grm-subcard-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #f6f2ea;
+}
+
+.grm-subcard-idx {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: rgba(236, 200, 139, 0.16);
+  border: 1px solid rgba(236, 200, 139, 0.32);
+  color: #ecc88b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.grm-hud-badge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  background: rgba(52, 211, 153, 0.13);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #6ee7b7;
+}
+
+.grm-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.grm-step {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 11px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(181, 201, 229, 0.07);
+  line-height: 1.5;
+}
+
+.grm-step-type {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: 'Cascadia Mono', 'Consolas', monospace;
+  font-size: 11px;
+  font-weight: 800;
+}
+.grm-step-type.me        { background: rgba(192, 132, 252, 0.16); border: 1px solid rgba(192, 132, 252, 0.36); color: #e9d5ff; }
+.grm-step-type.do        { background: rgba(96, 165, 250, 0.16);  border: 1px solid rgba(96, 165, 250, 0.36);  color: #bfdbfe; }
+.grm-step-type.try       { background: rgba(251, 191, 36, 0.16);  border: 1px solid rgba(251, 191, 36, 0.36);  color: #fde68a; }
+.grm-step-type.say       { background: rgba(148, 163, 184, 0.16); border: 1px solid rgba(148, 163, 184, 0.34); color: #f1f5f9; }
+.grm-step-type.megaphone { background: rgba(245, 158, 11, 0.2);   border: 1px solid rgba(251, 191, 36, 0.45);  color: #fcd34d; }
+.grm-step-type.action    { background: rgba(16, 185, 129, 0.16);  border: 1px solid rgba(52, 211, 153, 0.38);  color: #6ee7b7; }
+
+.grm-step-text {
+  font-size: 13px;
+  color: #dce5f2;
+  overflow-wrap: anywhere;
+}
+.grm-step-text.is-action {
+  color: #9ce6c8;
+  font-weight: 650;
+}
+
+/* Live recognition banner inside Submit Modal */
+.grm-live-preview {
+  margin: -4px 0 14px;
+  padding: 12px 14px;
+  border-radius: 11px;
+  border: 1px solid rgba(52, 211, 153, 0.38);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.11), rgba(14, 22, 34, 0.92));
+  color: #d1fae5;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.grm-live-preview strong {
+  display: block;
+  color: #6ee7b7;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.grm-live-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 7px;
+}
+.grm-live-chips span {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(236, 200, 139, 0.14);
+  border: 1px solid rgba(236, 200, 139, 0.3);
+  color: #f3d7a2;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   INTERACTIVE GRM1 VISUAL EDITOR & COMPILER
+   ========================================================================== */
+.grm-editor-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grm-editor-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(236, 200, 139, 0.35);
+  background: linear-gradient(120deg, rgba(236, 200, 139, 0.14), rgba(16, 24, 38, 0.92));
+}
+.grm-editor-banner strong {
+  color: #f7dfb0;
+  font-size: 13.5px;
+  letter-spacing: 0.3px;
+}
+.grm-editor-banner span {
+  font-size: 12px;
+  color: #9fb0c7;
+}
+
+.grm-ed-card {
+  border-radius: 13px;
+  border: 1px solid rgba(181, 201, 229, 0.15);
+  background: rgba(11, 17, 26, 0.88);
+  padding: 15px 16px;
+}
+
+.grm-ed-section-title {
+  margin: 0 0 11px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ecc88b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.grm-ed-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+
+.grm-quick-replace {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.85fr) minmax(140px, 1.15fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 11px 13px;
+  border-radius: 11px;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  background: rgba(16, 185, 129, 0.07);
+}
+.grm-quick-replace-label {
+  grid-column: 1 / -1;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #8ce9c2;
+}
+
+.grm-ed-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 13px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid rgba(181, 201, 229, 0.1);
+}
+
+.grm-ed-add-sub {
+  padding: 5px 11px;
+  border-radius: 8px;
+  border: 1px dashed rgba(52, 211, 153, 0.5);
+  background: rgba(16, 185, 129, 0.1);
+  color: #6ee7b7;
+  font-size: 12px;
+  font-weight: 750;
+}
+.grm-ed-add-sub:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-style: solid;
+}
+
+.grm-ed-subhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(20, 29, 44, 0.72);
+  border: 1px solid rgba(181, 201, 229, 0.12);
+}
+
+.grm-ed-subhead-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1 1 260px;
+}
+
+.grm-ed-hud-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #cbe3ff;
+  cursor: pointer;
+  user-select: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(12, 19, 30, 0.8);
+  border: 1px solid rgba(181, 201, 229, 0.16);
+}
+.grm-ed-hud-toggle input {
+  accent-color: #34d399;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+}
+
+.grm-ed-sub-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.grm-ed-icon-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 7px;
+  border: 1px solid rgba(181, 201, 229, 0.18);
+  background: rgba(15, 22, 34, 0.9);
+  color: #b7c6dc;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.grm-ed-icon-btn:hover:not(:disabled) {
+  border-color: rgba(236, 200, 139, 0.45);
+  color: #fff;
+}
+.grm-ed-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.grm-ed-icon-btn.danger:hover:not(:disabled) {
+  border-color: rgba(248, 113, 113, 0.55);
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+}
+
+.grm-ed-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.grm-ed-step-row {
+  display: grid;
+  grid-template-columns: 28px 158px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: rgba(17, 25, 38, 0.86);
+  border: 1px solid rgba(181, 201, 229, 0.12);
+}
+
+.grm-ed-step-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: #7c8fa8;
+  text-align: center;
+}
+
+.grm-ed-type-select {
+  width: 100%;
+  padding: 7px 8px;
+  border-radius: 7px;
+  border: 1px solid rgba(236, 200, 139, 0.28);
+  background: #0d1420;
+  color: #f4dfb6;
+  font-size: 12px;
+  font-weight: 700;
+  outline: none;
+}
+.grm-ed-type-select:focus {
+  border-color: #ecc88b;
+}
+
+.grm-ed-step-input {
+  width: 100%;
+  min-width: 0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(181, 201, 229, 0.18);
+  background: #0b111b;
+  color: #eef3fa;
+  font-size: 13px;
+  outline: none;
+}
+.grm-ed-step-input:focus {
+  border-color: #ecc88b;
+}
+
+.grm-ed-action-note {
+  padding: 7px 10px;
+  border-radius: 7px;
+  background: rgba(16, 185, 129, 0.09);
+  border: 1px dashed rgba(52, 211, 153, 0.32);
+  color: #8ce9c2;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.grm-ed-step-btns {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.grm-ed-add-bar {
+  margin-top: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.grm-ed-add-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #8a9bb4;
+  margin-right: 2px;
+}
+.grm-ed-quick-step {
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(236, 200, 139, 0.26);
+  background: rgba(236, 200, 139, 0.08);
+  color: #f3d7a2;
+  font-size: 11.5px;
+  font-weight: 750;
+}
+.grm-ed-quick-step:hover {
+  background: rgba(236, 200, 139, 0.2);
+  color: #fff;
+}
+
+.grm-ed-live-out {
+  border-radius: 12px;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  background: rgba(9, 17, 24, 0.95);
+  overflow: hidden;
+}
+.grm-ed-live-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 9px 14px;
+  background: rgba(16, 185, 129, 0.12);
+  border-bottom: 1px solid rgba(52, 211, 153, 0.22);
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #6ee7b7;
+}
+
+.grm-ed-footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+@media (max-width: 720px) {
+  .grm-ed-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .grm-quick-replace {
+    grid-template-columns: 1fr;
+  }
+  .grm-ed-step-row {
+    grid-template-columns: 26px 1fr auto;
+  }
+  .grm-ed-step-row .grm-ed-step-input,
+  .grm-ed-step-row .grm-ed-action-note {
+    grid-column: 1 / -1;
+  }
+}
+
 /* Primary Action Row (Download + Copy + Heart + Star + Flag) */
 .mc-action-bar {
   margin-top: 18px;
@@ -1077,11 +1617,26 @@ header .right {
 
     <form id="macroSubmitForm">
       <input type="hidden" id="editMacroId" value="">
+      <input type="hidden" id="macroFileNameInput" value="">
+
+      <div class="mc-field">
+        <div class="mc-code-tools">
+          <label for="macroCodeInput" style="margin:0">Код макроса (GRM1.... / конфиг) <span style="font-weight:500;color:#7688a1;font-size:11px;margin-left:6px">— распознаётся автоматически</span></label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <input type="file" id="macroFilePicker" accept=".amc,.xml,.json,.ahk,.cfg,.macro,.txt,.ini,.lua,.grm" hidden>
+            <button class="mc-mini-btn" id="initGrmBuilderBtn" type="button">🛠 Создать шаблон GRM1</button>
+            <button class="mc-mini-btn" id="loadMacroFileBtn" type="button">📂 Загрузить из файла</button>
+          </div>
+        </div>
+        <textarea class="mc-textarea" id="macroCodeInput" maxlength="250000" placeholder="Вставьте сюда строку вида GRM1.eyJ2Ijox... — сайт сам расшифрует макрос, заполнит название, список команд и категорию!"></textarea>
+      </div>
+
+      <div class="grm-live-preview" id="grmLivePreview" hidden></div>
 
       <div class="mc-form-grid">
         <div class="mc-field">
           <label for="macroTitleInput">Название макроса <span>от 2 до 100 симв.</span></label>
-          <input class="mc-input" id="macroTitleInput" type="text" required minlength="2" maxlength="100" placeholder="Например: Комплект макросов для госника">
+          <input class="mc-input" id="macroTitleInput" type="text" required minlength="2" maxlength="100" placeholder="Заполнится само из GRM1 или введите своё">
         </div>
 
         <div class="mc-field">
@@ -1098,7 +1653,7 @@ header .right {
 
       <div class="mc-field">
         <label for="macroDescInput">Краткое описание <span>до 300 симв.</span></label>
-        <input class="mc-input" id="macroDescInput" type="text" required minlength="2" maxlength="300" placeholder="Например: Готовый комплект макросов / реанимация на боковую кнопку мыши">
+        <input class="mc-input" id="macroDescInput" type="text" required minlength="2" maxlength="300" placeholder="Заполнится автоматически по содержимому макроса или напишите своё">
       </div>
 
       <div class="mc-form-grid">
@@ -1109,35 +1664,23 @@ header .right {
 
         <div class="mc-field">
           <label for="macroHotkeyInput">Клавиша / кнопка мыши <span>необязательно</span></label>
-          <input class="mc-input" id="macroHotkeyInput" type="text" maxlength="60" placeholder="Напр.: Mouse 5, Кнопка 4, F4">
+          <input class="mc-input" id="macroHotkeyInput" type="text" maxlength="60" placeholder="Напр.: HUD меню, Mouse 5, Кнопка 4">
         </div>
       </div>
 
       <div class="mc-form-grid">
         <div class="mc-field">
           <label for="macroUuidInput">
-            UUID / код импорта макроса
-            <span>из программы макросов</span>
+            UUID (если другой формат)
+            <span>необязательно</span>
           </label>
-          <input class="mc-input" id="macroUuidInput" type="text" maxlength="200" placeholder="Напр.: a99cb138-0ced-48bd-b7bf-40c83f477757">
+          <input class="mc-input" id="macroUuidInput" type="text" maxlength="200" placeholder="Оставьте пустым для макросов GRM1">
         </div>
 
         <div class="mc-field">
           <label for="macroTagsInput">Теги <span>через запятую</span></label>
-          <input class="mc-input" id="macroTagsInput" type="text" maxlength="200" placeholder="гос, крайм, рес, ems, чат">
+          <input class="mc-input" id="macroTagsInput" type="text" maxlength="200" placeholder="SAHP, Жетон, Обыск, Арест, Мегафон">
         </div>
-      </div>
-
-      <div class="mc-field">
-        <div class="mc-code-tools">
-          <label for="macroCodeInput" style="margin:0">Конфигурация / скрипт / файл макроса <span style="font-weight:500;color:#7688a1;font-size:11px;margin-left:6px">(или загрузите файл)</span></label>
-          <div>
-            <input type="file" id="macroFilePicker" accept=".amc,.xml,.json,.ahk,.cfg,.macro,.txt,.ini,.lua" hidden>
-            <button class="mc-mini-btn" id="loadMacroFileBtn" type="button">📂 Загрузить файл макроса (.json / .xml / .amc / .ahk / .cfg)</button>
-          </div>
-        </div>
-        <textarea class="mc-textarea" id="macroCodeInput" maxlength="250000" placeholder="Вставьте код или экспортированную конфигурацию макроса (либо оставьте пустым, если макрос импортируется только по UUID выше)..."></textarea>
-        <input type="hidden" id="macroFileNameInput" value="">
       </div>
 
       <div class="mc-modal-actions">
@@ -1153,6 +1696,6 @@ header .right {
 <script src="vendor/supabase.js"></script>
 <script src="supabase-config.js?v=3"></script>
 <script src="achievements.js"></script>
-<script src="macros.js?v=2"></script>
+<script src="macros.js?v=4"></script>
 </body>
 </html>
